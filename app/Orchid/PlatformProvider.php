@@ -34,15 +34,51 @@ class PlatformProvider extends OrchidServiceProvider
     public function menu(): array
     {
         return [
+            Menu::make('Quản lý nhà hàng')
+                ->icon('bs.building')
+                ->title('Nhà hàng')
+                ->list([
+                    Menu::make('Danh sách nhà hàng')
+                        ->icon('bs.list')
+                        ->route('platform.restaurant.list'),
+                    Menu::make('Loại nhà hàng')
+                        ->icon('bs.tags')
+                        ->route('platform.restaurant-type.list'),
+                    Menu::make('Tiện ích')
+                        ->icon('bs.stars')
+                        ->route('platform.amenity.list'),
+                ]),
+
+            Menu::make('Quản lý đặt bàn')
+                ->icon('bs.calendar')
+                ->title('Đặt bàn')
+                ->list([
+                    Menu::make('Danh sách đặt bàn')
+                        ->icon('bs.list')
+                        ->route('platform.reservation.list'),
+                ]),
+
+            Menu::make('Quản lý đánh giá')
+                ->icon('bs.star')
+                ->title('Đánh giá')
+                ->list([
+                    Menu::make('Danh sách đánh giá')
+                        ->icon('bs.list')
+                        ->route('platform.review.list'),
+                ]),
+
             Menu::make("Product")
                 ->icon('bs.bag')
                 ->route('platform.products'),
+
             Menu::make("Partner")
                 ->icon('bs.building')
                 ->route('platform.partners'),
+
             Menu::make(__('Cấu hình'))
                 ->icon('bs.gear')
                 ->route('platform.configurations'),
+
             Menu::make('Get Started')
                 ->icon('bs.book')
                 ->title('Navigation')
@@ -112,6 +148,12 @@ class PlatformProvider extends OrchidServiceProvider
             ItemPermission::group(__('System'))
                 ->addPermission('platform.systems.roles', __('Roles'))
                 ->addPermission('platform.systems.users', __('Users')),
+            ItemPermission::group(__('Restaurant'))
+                ->addPermission('platform.restaurant.manage', __('Manage Restaurants'))
+                ->addPermission('platform.restaurant-type.manage', __('Manage Restaurant Types'))
+                ->addPermission('platform.amenity.manage', __('Manage Amenities'))
+                ->addPermission('platform.reservation.manage', __('Manage Reservations'))
+                ->addPermission('platform.review.manage', __('Manage Reviews')),
         ];
     }
 }

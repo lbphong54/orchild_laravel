@@ -19,9 +19,20 @@ use App\Orchid\Screens\Product\ProductDetailScreen;
 use App\Orchid\Screens\Product\ProductListScreen;
 use App\Orchid\Screens\Role\RoleEditScreen;
 use App\Orchid\Screens\Role\RoleListScreen;
+use App\Orchid\Screens\User\UserCreateScreen;
 use App\Orchid\Screens\User\UserEditScreen;
 use App\Orchid\Screens\User\UserListScreen;
 use App\Orchid\Screens\User\UserProfileScreen;
+use App\Orchid\Screens\Restaurant\RestaurantListScreen;
+use App\Orchid\Screens\Restaurant\RestaurantEditScreen;
+use App\Orchid\Screens\RestaurantType\RestaurantTypeListScreen;
+use App\Orchid\Screens\RestaurantType\RestaurantTypeEditScreen;
+use App\Orchid\Screens\Amenity\AmenityListScreen;
+use App\Orchid\Screens\Amenity\AmenityEditScreen;
+use App\Orchid\Screens\Review\ReviewListScreen;
+use App\Orchid\Screens\Review\ReviewEditScreen;
+use App\Orchid\Screens\Reservation\ReservationListScreen;
+use App\Orchid\Screens\Reservation\ReservationEditScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -47,26 +58,26 @@ Route::screen('profile', UserProfileScreen::class)
         ->parent('platform.index')
         ->push(__('Profile'), route('platform.profile')));
 
-// Platform > System > Users > User
-Route::screen('users/{user}/edit', UserEditScreen::class)
-    ->name('platform.systems.users.edit')
-    ->breadcrumbs(fn (Trail $trail, $user) => $trail
-        ->parent('platform.systems.users')
-        ->push($user->name, route('platform.systems.users.edit', $user)));
-
-// Platform > System > Users > Create
-Route::screen('users/create', UserEditScreen::class)
-    ->name('platform.systems.users.create')
-    ->breadcrumbs(fn (Trail $trail) => $trail
-        ->parent('platform.systems.users')
-        ->push(__(key: 'Create'), route('platform.systems.users.create')));
-
 // Platform > System > Users
 Route::screen('users', UserListScreen::class)
     ->name('platform.systems.users')
     ->breadcrumbs(fn (Trail $trail) => $trail
         ->parent('platform.index')
         ->push(__('Users'), route('platform.systems.users')));
+
+// Platform > System > Users > Create
+Route::screen('users/create', UserCreateScreen::class)
+    ->name('platform.systems.users.create')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.systems.users')
+        ->push(__('Create'), route('platform.systems.users.create')));
+
+// Platform > System > Users > Edit
+Route::screen('users/{user}/edit', UserEditScreen::class)
+    ->name('platform.systems.users.edit')
+    ->breadcrumbs(fn (Trail $trail, $user) => $trail
+        ->parent('platform.systems.users')
+        ->push(__('Edit'), route('platform.systems.users.edit', $user)));
 
 // Platform > System > Roles > Role
 Route::screen('roles/{role}/edit', RoleEditScreen::class)
@@ -106,9 +117,6 @@ Route::screen('/examples/grid', ExampleGridScreen::class)->name('platform.exampl
 Route::screen('/examples/charts', ExampleChartsScreen::class)->name('platform.example.charts');
 Route::screen('/examples/cards', ExampleCardsScreen::class)->name('platform.example.cards');
 
-//Route::screen('idea', Idea::class, 'platform.screens.idea');
-
-
 //shop
 //Product
 Route::screen('/products', ProductListScreen::class)
@@ -135,3 +143,68 @@ Route::screen('/configuration', ConfigurationScreen::class)
         ->breadcrumbs(fn (Trail $trail) => $trail
             ->parent('platform.index')
             ->push(__('Configuration')));
+
+// Restaurant Management
+Route::screen('/restaurant', RestaurantListScreen::class)
+    ->name('platform.restaurant.list')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push(__('Restaurants')));
+
+Route::screen('/restaurant/{restaurant}/edit', RestaurantEditScreen::class)
+    ->name('platform.restaurant.edit')
+    ->breadcrumbs(fn (Trail $trail, $restaurant) => $trail
+        ->parent('platform.restaurant.list')
+        ->push($restaurant->exists ? $restaurant->name : __('Create')));
+
+// Restaurant Type Management
+Route::screen('/restaurant-type', RestaurantTypeListScreen::class)
+    ->name('platform.restaurant-type.list')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push(__('Restaurant Types')));
+
+Route::screen('/restaurant-type/{restaurantType}/edit', RestaurantTypeEditScreen::class)
+    ->name('platform.restaurant-type.edit')
+    ->breadcrumbs(fn (Trail $trail, $restaurantType) => $trail
+        ->parent('platform.restaurant-type.list')
+        ->push($restaurantType->exists ? $restaurantType->name : __('Create')));
+
+// Amenity Management
+Route::screen('/amenity', AmenityListScreen::class)
+    ->name('platform.amenity.list')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push(__('Amenities')));
+
+Route::screen('/amenity/{amenity}/edit', AmenityEditScreen::class)
+    ->name('platform.amenity.edit')
+    ->breadcrumbs(fn (Trail $trail, $amenity) => $trail
+        ->parent('platform.amenity.list')
+        ->push($amenity->exists ? $amenity->name : __('Create')));
+
+// Review Management
+Route::screen('/review', ReviewListScreen::class)
+    ->name('platform.review.list')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push(__('Reviews')));
+
+Route::screen('/review/{review}/edit', ReviewEditScreen::class)
+    ->name('platform.review.edit')
+    ->breadcrumbs(fn (Trail $trail, $review) => $trail
+        ->parent('platform.review.list')
+        ->push($review->exists ? __('Edit Review') : __('Create Review')));
+
+// Reservation Management
+Route::screen('/reservation', ReservationListScreen::class)
+    ->name('platform.reservation.list')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push(__('Reservations')));
+
+Route::screen('/reservation/{reservation}/edit', ReservationEditScreen::class)
+    ->name('platform.reservation.edit')
+    ->breadcrumbs(fn (Trail $trail, $reservation) => $trail
+        ->parent('platform.reservation.list')
+        ->push($reservation->exists ? __('Edit Reservation') : __('Create Reservation')));

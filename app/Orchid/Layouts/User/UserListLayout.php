@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace App\Orchid\Layouts\User;
 
-use App\Models\User;
+use Orchid\Platform\Models\User;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\DropDown;
 use Orchid\Screen\Actions\Link;
-use Orchid\Screen\Actions\ModalToggle;
-use Orchid\Screen\Components\Cells\DateTimeSplit;
 use Orchid\Screen\Fields\Input;
-use Orchid\Screen\Layouts\Persona;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 
@@ -32,49 +29,25 @@ class UserListLayout extends Table
                 ->sort()
                 ->cantHide()
                 ->filter(Input::make())
-                ->render(fn (User $user) => new Persona($user->presenter())),
+                ->render(fn(User $user) => Link::make($user->name)
+                    ->route('platform.systems.users.edit', $user)),
 
             TD::make('email', __('Email'))
                 ->sort()
                 ->cantHide()
+                ->filter(Input::make()),
+            TD::make('roles', __('Role'))
+                ->sort()
+                ->cantHide()
                 ->filter(Input::make())
-                ->render(fn (User $user) => ModalToggle::make($user->email)
-                    ->modal('editUserModal')
-                    ->modalTitle($user->presenter()->title())
-                    ->method('saveUser')
-                    ->asyncParameters([
-                        'user' => $user->id,
-                    ])),
-
+                ->render(fn(User $user) => $user->roles->pluck('name')->implode(', ')),
             TD::make('created_at', __('Created'))
-                ->usingComponent(DateTimeSplit::class)
-                ->align(TD::ALIGN_RIGHT)
-                ->defaultHidden()
-                ->sort(),
+                ->sort()
+                ->render(fn(User $user) => $user->created_at->toDateTimeString()),
 
             TD::make('updated_at', __('Last edit'))
-                ->usingComponent(DateTimeSplit::class)
-                ->align(TD::ALIGN_RIGHT)
-                ->sort(),
-
-            TD::make(__('Actions'))
-                ->align(TD::ALIGN_CENTER)
-                ->width('00px')
-                ->render(fn (User $user) => DropDown::make()
-                    ->icon('bs.three-dots-vertical')
-                    ->list([
-
-                        Link::make(__(key: 'Edit'))
-                            ->route('platform.systems.users.edit', $user->id)
-                            ->icon('bs.pencil'),
-
-                        Button::make(__(key: 'Delete'))
-                            ->icon('bs.trash3')
-                            ->confirm(__('Once the account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.'))
-                            ->method('remove', [
-                                'id' => $user->id,
-                            ]),
-                    ])),
+                ->sort()
+                ->render(fn(User $user) => $user->updated_at->toDateTimeString()),
         ];
     }
 }

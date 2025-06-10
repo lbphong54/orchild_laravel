@@ -10,10 +10,13 @@ use App\Orchid\Layouts\User\UserListLayout;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\User;
+use App\Orchid\Layouts\User\UserCreateLayout;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
 use Orchid\Support\Facades\Toast;
+use Orchid\Screen\Actions\ModalToggle;
+use Illuminate\Support\Facades\Hash;
 
 class UserListScreen extends Screen
 {
@@ -45,7 +48,7 @@ class UserListScreen extends Screen
      */
     public function description(): ?string
     {
-        return 'A comprehensive list of all registered users, including their profiles and privileges.';
+        return 'A comprehensive list of all users in the system';
     }
 
     public function permission(): ?iterable
@@ -63,9 +66,10 @@ class UserListScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Link::make(__(key: 'Add'))
-                ->icon('bs.plus-circle')
-                ->route('platform.systems.users.create'),
+            ModalToggle::make(__('Add new'))
+                ->modal('createUserModal')
+                ->method('createUser')
+                ->icon('plus'),
         ];
     }
 
@@ -82,6 +86,10 @@ class UserListScreen extends Screen
 
             Layout::modal('editUserModal', UserEditLayout::class)
                 ->deferred('loadUserOnOpenModal'),
+
+            Layout::modal('createUserModal', UserCreateLayout::class)
+                ->title(__('Create User'))
+                ->applyButton('Create User')
         ];
     }
 
@@ -111,10 +119,38 @@ class UserListScreen extends Screen
         Toast::info(__('User was saved.'));
     }
 
-    public function remove(Request $request): void
+    public function remove(User $user)
     {
-        User::findOrFail($request->get('id'))->delete();
+        $user->delete();
 
         Toast::info(__('User was removed'));
+    }
+
+    public function asyncCreateUser(): array
+    {
+        return [
+            'user' => new User(),
+        ];
+    }
+
+    public function createUser(Request $request)
+    {
+        $request->validate([
+            'user.email' => [
+                'required',
+                Rule::unique(User::class, 'email'),
+            ],
+            'user.name' => 'required',
+            'password' => 'required|confirmed|min:8',
+        ]);
+
+        $user = new User();
+        $user->fill($request->get('user'));
+        $user->password = Hash::make($request->get('password'));
+        $user->save();
+        
+        $user->roles()->sync($request->input('user.roles'));
+
+        Toast::info(__('User was created successfully.'));
     }
 }
