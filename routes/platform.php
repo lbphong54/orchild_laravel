@@ -33,6 +33,10 @@ use App\Orchid\Screens\Review\ReviewListScreen;
 use App\Orchid\Screens\Review\ReviewEditScreen;
 use App\Orchid\Screens\Reservation\ReservationListScreen;
 use App\Orchid\Screens\Reservation\ReservationEditScreen;
+use App\Orchid\Screens\Restaurant\RestaurantProfileScreen;
+use App\Orchid\Screens\Customer\CustomerListScreen;
+use App\Orchid\Screens\Customer\CustomerEditScreen;
+use App\Orchid\Screens\Restaurant\RestaurantDetailScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -151,11 +155,11 @@ Route::screen('/restaurant', RestaurantListScreen::class)
         ->parent('platform.index')
         ->push(__('Restaurants')));
 
-Route::screen('/restaurant/{restaurant}/edit', RestaurantEditScreen::class)
-    ->name('platform.restaurant.edit')
+Route::screen('/restaurant/{restaurant}', RestaurantDetailScreen::class)
+    ->name('platform.restaurant.detail')
     ->breadcrumbs(fn (Trail $trail, $restaurant) => $trail
         ->parent('platform.restaurant.list')
-        ->push($restaurant->exists ? $restaurant->name : __('Create')));
+        ->push($restaurant->name));
 
 // Restaurant Type Management
 Route::screen('/restaurant-type', RestaurantTypeListScreen::class)
@@ -164,12 +168,6 @@ Route::screen('/restaurant-type', RestaurantTypeListScreen::class)
         ->parent('platform.index')
         ->push(__('Restaurant Types')));
 
-Route::screen('/restaurant-type/{restaurantType}/edit', RestaurantTypeEditScreen::class)
-    ->name('platform.restaurant-type.edit')
-    ->breadcrumbs(fn (Trail $trail, $restaurantType) => $trail
-        ->parent('platform.restaurant-type.list')
-        ->push($restaurantType->exists ? $restaurantType->name : __('Create')));
-
 // Amenity Management
 Route::screen('/amenity', AmenityListScreen::class)
     ->name('platform.amenity.list')
@@ -177,24 +175,12 @@ Route::screen('/amenity', AmenityListScreen::class)
         ->parent('platform.index')
         ->push(__('Amenities')));
 
-Route::screen('/amenity/{amenity}/edit', AmenityEditScreen::class)
-    ->name('platform.amenity.edit')
-    ->breadcrumbs(fn (Trail $trail, $amenity) => $trail
-        ->parent('platform.amenity.list')
-        ->push($amenity->exists ? $amenity->name : __('Create')));
-
 // Review Management
 Route::screen('/review', ReviewListScreen::class)
     ->name('platform.review.list')
     ->breadcrumbs(fn (Trail $trail) => $trail
         ->parent('platform.index')
         ->push(__('Reviews')));
-
-Route::screen('/review/{review}/edit', ReviewEditScreen::class)
-    ->name('platform.review.edit')
-    ->breadcrumbs(fn (Trail $trail, $review) => $trail
-        ->parent('platform.review.list')
-        ->push($review->exists ? __('Edit Review') : __('Create Review')));
 
 // Reservation Management
 Route::screen('/reservation', ReservationListScreen::class)
@@ -208,3 +194,23 @@ Route::screen('/reservation/{reservation}/edit', ReservationEditScreen::class)
     ->breadcrumbs(fn (Trail $trail, $reservation) => $trail
         ->parent('platform.reservation.list')
         ->push($reservation->exists ? __('Edit Reservation') : __('Create Reservation')));
+
+// Restaurant Profile
+Route::screen('/restaurant/profile/{restaurant}', RestaurantProfileScreen::class)
+    ->name('platform.restaurant.profile')
+    ->breadcrumbs(fn (Trail $trail, $restaurant) => $trail
+        ->parent('platform.index')
+        ->push(__('Restaurant Profile')));
+
+// Customer Management
+Route::screen('/customer', CustomerListScreen::class)
+    ->name('platform.customer.list')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push(__('Customers')));
+
+Route::screen('/customer/{customer}/edit', CustomerEditScreen::class)
+    ->name('platform.customer.edit')
+    ->breadcrumbs(fn (Trail $trail, $customer) => $trail
+        ->parent('platform.customer.list')
+        ->push($customer->exists ? $customer->full_name : 'Thêm khách hàng mới'));

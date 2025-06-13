@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Orchid\Screen\AsSource;
 
 class Amenity extends Model
 {
+    use AsSource;
+
     protected $fillable = [
         'name',
         'description',

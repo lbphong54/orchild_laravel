@@ -41,6 +41,11 @@ class PlatformProvider extends OrchidServiceProvider
                     Menu::make('Danh sách nhà hàng')
                         ->icon('bs.list')
                         ->route('platform.restaurant.list'),
+                    Menu::make('Thông tin nhà hàng')
+                        ->icon('bs.person')
+                        ->route('platform.restaurant.profile', ['restaurant' => auth()->user()->restaurant?->id ?? 1])
+                        ->canSee(auth()->check() && auth()->user()->restaurant_id)
+                        ->permission('platform.restaurant.manage'),
                     Menu::make('Loại nhà hàng')
                         ->icon('bs.tags')
                         ->route('platform.restaurant-type.list'),
@@ -57,6 +62,12 @@ class PlatformProvider extends OrchidServiceProvider
                         ->icon('bs.list')
                         ->route('platform.reservation.list'),
                 ]),
+
+            Menu::make('Danh sách khách hàng')
+                ->icon('bs.people')
+                ->title('Khách hàng')
+                ->route('platform.customer.list'),
+
 
             Menu::make('Quản lý đánh giá')
                 ->icon('bs.star')
@@ -87,7 +98,7 @@ class PlatformProvider extends OrchidServiceProvider
             Menu::make('Sample Screen')
                 ->icon('bs.collection')
                 ->route('platform.example')
-                ->badge(fn () => 6),
+                ->badge(fn() => 6),
 
             Menu::make('Form Elements')
                 ->icon('bs.card-list')
@@ -133,7 +144,7 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon('bs.box-arrow-up-right')
                 ->url('https://github.com/orchidsoftware/platform/blob/master/CHANGELOG.md')
                 ->target('_blank')
-                ->badge(fn () => Dashboard::version(), Color::DARK),
+                ->badge(fn() => Dashboard::version(), Color::DARK),
         ];
     }
 
@@ -153,7 +164,8 @@ class PlatformProvider extends OrchidServiceProvider
                 ->addPermission('platform.restaurant-type.manage', __('Manage Restaurant Types'))
                 ->addPermission('platform.amenity.manage', __('Manage Amenities'))
                 ->addPermission('platform.reservation.manage', __('Manage Reservations'))
-                ->addPermission('platform.review.manage', __('Manage Reviews')),
+                ->addPermission('platform.review.manage', __('Manage Reviews'))
+                ->addPermission('platform.customer.manage', __('Manage Customers')),
         ];
     }
 }

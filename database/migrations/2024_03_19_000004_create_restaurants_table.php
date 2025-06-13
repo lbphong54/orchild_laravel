@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('address', 255);
             $table->string('phone', 20)->nullable();
             $table->string('email', 100)->nullable();
+            $table->string('price_range')->nullable();
             $table->text('summary')->nullable();
             $table->text('suggestion')->nullable();
             $table->text('description')->nullable();

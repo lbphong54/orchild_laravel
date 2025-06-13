@@ -5,17 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Orchid\Screen\AsSource;
 
 class Reservation extends Model
 {
+    use AsSource;
     protected $fillable = [
         'customer_id',
         'restaurant_id',
-        'reservation_date',
         'reservation_time',
         'number_of_guests',
         'status',
-        'special_requests',
+        'special_request',
     ];
 
     protected $casts = [

@@ -39,6 +39,7 @@ class User extends Authenticatable
     protected $casts = [
         'permissions'          => 'array',
         'email_verified_at'    => 'datetime',
+        'password' => 'hashed',
     ];
 
     /**
@@ -66,4 +67,9 @@ class User extends Authenticatable
         'updated_at',
         'created_at',
     ];
+
+    public function restaurant()
+    {
+        return $this->belongsTo(Restaurant::class);
+    }
 }

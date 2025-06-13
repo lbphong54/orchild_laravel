@@ -45,7 +45,7 @@ class RestaurantListScreen extends Screen
                     ->sort()
                     ->filter()
                     ->render(fn (Restaurant $restaurant) => Link::make($restaurant->name)
-                        ->route('platform.restaurant.edit', $restaurant)),
+                        ->route('platform.restaurant.detail', $restaurant)),
                 TD::make('address', 'Địa chỉ')
                     ->sort()
                     ->filter(),

@@ -13,15 +13,20 @@ use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Fields\Upload;
-use Orchid\Screen\Fields\CheckBox;
+use Orchid\Support\Facades\Toast;
 
-class RestaurantEditScreen extends Screen
+class RestaurantProfileScreen extends Screen
 {
     public $restaurant;
 
     public function name(): ?string
     {
-        return $this->restaurant->exists ? 'Chỉnh sửa nhà hàng' : 'Thêm nhà hàng mới';
+        return 'Thông tin nhà hàng';
+    }
+
+    public function description(): ?string
+    {
+        return 'Cập nhật thông tin nhà hàng của bạn';
     }
 
     public function query(Restaurant $restaurant): array
@@ -36,20 +41,9 @@ class RestaurantEditScreen extends Screen
     public function commandBar(): array
     {
         return [
-            Button::make('Lưu')
-                ->icon('pencil')
-                ->method('createOrUpdate')
-                ->canSee(!$this->restaurant->exists),
-
             Button::make('Cập nhật')
                 ->icon('note')
-                ->method('createOrUpdate')
-                ->canSee($this->restaurant->exists),
-
-            Button::make('Xóa')
-                ->icon('trash')
-                ->method('remove')
-                ->canSee($this->restaurant->exists),
+                ->method('update')
         ];
     }
 
@@ -105,11 +99,6 @@ class RestaurantEditScreen extends Screen
                     ->multiple()
                     ->help('Chọn các tiện ích'),
 
-                CheckBox::make('restaurant.status')
-                    ->title('Trạng thái')
-                    ->placeholder('Hoạt động')
-                    ->help('Chọn nếu nhà hàng đang hoạt động'),
-
                 Upload::make('restaurant.images')
                     ->title('Hình ảnh')
                     ->multiple()
@@ -119,20 +108,13 @@ class RestaurantEditScreen extends Screen
         ];
     }
 
-    public function createOrUpdate(Restaurant $restaurant, Request $request)
+    public function update(Restaurant $restaurant, Request $request)
     {
         $restaurant->fill($request->get('restaurant'))->save();
         
         $restaurant->types()->sync($request->get('restaurant.types'));
         $restaurant->amenities()->sync($request->get('restaurant.amenities'));
 
-        return redirect()->route('platform.restaurant.list');
-    }
-
-    public function remove(Restaurant $restaurant)
-    {
-        $restaurant->delete();
-
-        return redirect()->route('platform.restaurant.list');
+        Toast::info('Thông tin nhà hàng đã được cập nhật thành công.');
     }
 } 

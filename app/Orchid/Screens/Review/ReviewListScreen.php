@@ -19,18 +19,8 @@ class ReviewListScreen extends Screen
     {
         return [
             'reviews' => Review::with(['restaurant', 'customer'])
-                ->filters()
-                ->defaultSort('id', 'desc')
+                ->orderBy('id', 'desc')
                 ->paginate()
-        ];
-    }
-
-    public function commandBar(): array
-    {
-        return [
-            Link::make('Thêm mới')
-                ->icon('plus')
-                ->route('platform.review.edit')
         ];
     }
 

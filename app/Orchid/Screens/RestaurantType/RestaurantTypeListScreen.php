@@ -4,7 +4,6 @@ namespace App\Orchid\Screens\RestaurantType;
 
 use App\Models\RestaurantType;
 use Illuminate\Http\Request;
-use Orchid\Alert\Toast as AlertToast;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Screen;
 use Orchid\Screen\Actions\Link;
@@ -25,7 +24,7 @@ class RestaurantTypeListScreen extends Screen
     public function query(): array
     {
         return [
-            'restaurantTypes' => RestaurantType::paginate()
+            'restaurantTypes' => RestaurantType::orderBy('id', 'desc')->paginate()
         ];
     }
 
@@ -48,15 +47,23 @@ class RestaurantTypeListScreen extends Screen
                     ->filter(),
                 TD::make('name', 'Tên loại')
                     ->sort()
-                    ->filter()
-                    ->render(fn (RestaurantType $type) => Link::make($type->name)
-                        ->route('platform.restaurant-type.edit', $type)),
-                TD::make('description', 'Mô tả')
-                    ->sort()
                     ->filter(),
-                TD::make('created_at', 'Ngày tạo')
-                    ->sort()
-                    ->render(fn (RestaurantType $type) => $type->created_at->format('d/m/Y H:i')),
+                // TD::make('created_at', 'Ngày tạo')
+                //     ->sort()
+                //     ->render(fn(RestaurantType $type) => $type->created_at->format('d/m/Y H:i')),
+                TD::make('')
+                    ->align(TD::ALIGN_CENTER)
+                    ->width('100px')
+                    ->render(
+                        fn(RestaurantType $type) => ModalToggle::make('')
+                            ->icon('eye')
+                            ->modal('editRestaurantTypeModal')
+                            ->method('editRestaurantType')
+                            ->modalTitle('Chỉnh sửa loại nhà hàng')
+                            ->asyncParameters([
+                                'restaurantType' => $type->id
+                            ])
+                    ),
             ]),
 
             Layout::modal('createRestaurantTypeModal', [
@@ -65,12 +72,31 @@ class RestaurantTypeListScreen extends Screen
                         ->title('Tên loại')
                         ->required(),
                     TextArea::make('description')
-                        ->title('Mô tả') 
-                        ->required(),
+                        ->title('Mô tả'),
                 ])
             ])
                 ->title('Thêm loại nhà hàng')
-                ->applyButton('Thêm')
+                ->applyButton('Thêm'),
+
+            Layout::modal('editRestaurantTypeModal', [
+                Layout::rows([
+                    Input::make('restaurantType.name')
+                        ->title('Tên loại')
+                        ->required(),
+                    TextArea::make('restaurantType.description')
+                        ->title('Mô tả'),
+                ])
+            ])
+                ->title('Chỉnh sửa loại nhà hàng')
+                ->applyButton('Cập nhật')
+                ->async('asyncGetRestaurantType')
+        ];
+    }
+
+    public function asyncGetRestaurantType(RestaurantType $restaurantType)
+    {
+        return [
+            'restaurantType' => $restaurantType
         ];
     }
 
@@ -85,4 +111,19 @@ class RestaurantTypeListScreen extends Screen
 
         Toast::success('Thêm loại nhà hàng thành công');
     }
-} 
+
+    public function editRestaurantType(Request $request, RestaurantType $restaurantType)
+    {
+        $request->validate([
+            'restaurantType.name' => 'required|string|max:255',
+            'restaurantType.description' => 'nullable|string',
+        ]);
+
+        $restaurantType->update([
+            'name' => $request->input('restaurantType.name'),
+            'description' => $request->input('restaurantType.description')
+        ]);
+
+        Toast::success('Cập nhật loại nhà hàng thành công');
+    }
+}
