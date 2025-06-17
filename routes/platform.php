@@ -2,21 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Models\Product;
 use App\Orchid\Screens\Configuration\ConfigurationScreen;
-use App\Orchid\Screens\Examples\ExampleActionsScreen;
-use App\Orchid\Screens\Examples\ExampleCardsScreen;
-use App\Orchid\Screens\Examples\ExampleChartsScreen;
-use App\Orchid\Screens\Examples\ExampleFieldsAdvancedScreen;
-use App\Orchid\Screens\Examples\ExampleFieldsScreen;
-use App\Orchid\Screens\Examples\ExampleGridScreen;
-use App\Orchid\Screens\Examples\ExampleLayoutsScreen;
 use App\Orchid\Screens\Examples\ExampleScreen;
-use App\Orchid\Screens\Examples\ExampleTextEditorsScreen;
-use App\Orchid\Screens\Partner\PartnerListScreen;
 use App\Orchid\Screens\PlatformScreen;
-use App\Orchid\Screens\Product\ProductDetailScreen;
-use App\Orchid\Screens\Product\ProductListScreen;
 use App\Orchid\Screens\Role\RoleEditScreen;
 use App\Orchid\Screens\Role\RoleListScreen;
 use App\Orchid\Screens\User\UserCreateScreen;
@@ -104,43 +92,6 @@ Route::screen('roles', RoleListScreen::class)
         ->parent('platform.index')
         ->push(__('Roles'), route('platform.systems.roles')));
 
-// Example...
-Route::screen('example', ExampleScreen::class)
-    ->name('platform.example')
-    ->breadcrumbs(fn (Trail $trail) => $trail
-        ->parent('platform.index')
-        ->push('Example Screen'));
-
-Route::screen('/examples/form/fields', ExampleFieldsScreen::class)->name('platform.example.fields');
-Route::screen('/examples/form/advanced', ExampleFieldsAdvancedScreen::class)->name('platform.example.advanced');
-Route::screen('/examples/form/editors', ExampleTextEditorsScreen::class)->name('platform.example.editors');
-Route::screen('/examples/form/actions', ExampleActionsScreen::class)->name('platform.example.actions');
-
-Route::screen('/examples/layouts', ExampleLayoutsScreen::class)->name('platform.example.layouts');
-Route::screen('/examples/grid', ExampleGridScreen::class)->name('platform.example.grid');
-Route::screen('/examples/charts', ExampleChartsScreen::class)->name('platform.example.charts');
-Route::screen('/examples/cards', ExampleCardsScreen::class)->name('platform.example.cards');
-
-//shop
-//Product
-Route::screen('/products', ProductListScreen::class)
-        ->name('platform.products')
-        ->breadcrumbs(fn (Trail $trail) => $trail
-            ->parent('platform.index')
-            ->push(__('Products')));
-Route::screen('/products/{product}', ProductDetailScreen::class)
-        ->name('platform.products.detail')
-        ->breadcrumbs(fn (Trail $trail, $product) => $trail
-            ->parent('platform.products')
-            ->push($product->name));
-        
-//Partner
-Route::screen('/partner', PartnerListScreen::class)
-        ->name('platform.partners')
-        ->breadcrumbs(fn (Trail $trail) => $trail
-            ->parent('platform.index')
-            ->push(__('Partners')));    
-
 //Configuration
 Route::screen('/configuration', ConfigurationScreen::class)
         ->name('platform.configurations')
@@ -196,9 +147,9 @@ Route::screen('/reservation/{reservation}/edit', ReservationEditScreen::class)
         ->push($reservation->exists ? __('Edit Reservation') : __('Create Reservation')));
 
 // Restaurant Profile
-Route::screen('/restaurant/profile/{restaurant}', RestaurantProfileScreen::class)
+Route::screen('/restaurant/profile/{restaurant?}', RestaurantProfileScreen::class)
     ->name('platform.restaurant.profile')
-    ->breadcrumbs(fn (Trail $trail, $restaurant) => $trail
+    ->breadcrumbs(fn (Trail $trail, $restaurant = null) => $trail
         ->parent('platform.index')
         ->push(__('Restaurant Profile')));
 

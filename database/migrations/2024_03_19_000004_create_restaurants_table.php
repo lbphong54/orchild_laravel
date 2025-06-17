@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('parking_info', 255)->nullable();
             $table->json('amenities')->nullable();
             $table->json('opening_hours')->nullable();
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->enum('status', ['active', 'inactive'])->default('inactive');
             $table->timestamps();
         });
     }

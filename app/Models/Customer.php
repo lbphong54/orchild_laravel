@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Orchid\Filters\Filterable;
 use Orchid\Screen\AsSource;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
-class Customer extends Model
+class Customer extends Authenticatable
 {
-    use HasFactory, AsSource, Filterable;
+    use HasFactory, AsSource, Filterable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -22,6 +24,17 @@ class Customer extends Model
         'email',
         'phone',
         'address',
+        'password',
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
     ];
 
     /**

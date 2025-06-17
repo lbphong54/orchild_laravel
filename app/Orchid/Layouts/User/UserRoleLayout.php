@@ -21,7 +21,6 @@ class UserRoleLayout extends Rows
         return [
             Select::make('user.roles.')
                 ->fromModel(Role::class, 'name')
-                ->multiple()
                 ->title(__('Name role'))
                 ->help(__('Select the role(s) for this user')),
         ];

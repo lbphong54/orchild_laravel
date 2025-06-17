@@ -19,8 +19,11 @@ class Restaurant extends Model
         'phone',
         'email',
         'opening_hours',
-        'closing_hours',
         'status',
+    ];
+
+    protected $casts = [
+        'opening_hours' => 'array',
     ];
 
     public function types(): BelongsToMany

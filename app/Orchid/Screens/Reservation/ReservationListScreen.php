@@ -67,7 +67,7 @@ class ReservationListScreen extends Screen
                 TD::make('created_at', 'Ngày tạo')
                     ->sort()
                     ->render(fn(Reservation $reservation) => $reservation->created_at->format('d/m/Y H:i')),
-                TD::make('actions', 'Thao tác')
+                TD::make('actions', '')
                     ->align(TD::ALIGN_CENTER)
                     ->width('100px')
                     ->render(fn(Reservation $reservation) => ModalToggle::make('')
