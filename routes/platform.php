@@ -25,6 +25,8 @@ use App\Orchid\Screens\Restaurant\RestaurantProfileScreen;
 use App\Orchid\Screens\Customer\CustomerListScreen;
 use App\Orchid\Screens\Customer\CustomerEditScreen;
 use App\Orchid\Screens\Restaurant\RestaurantDetailScreen;
+use App\Orchid\Screens\Table\TableListScreen;
+use App\Orchid\Screens\Table\TableEditScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -106,6 +108,13 @@ Route::screen('/restaurant', RestaurantListScreen::class)
         ->parent('platform.index')
         ->push(__('Restaurants')));
 
+        // Restaurant Profile
+Route::screen('/restaurant/profile', RestaurantProfileScreen::class)
+->name('platform.restaurant.profile')
+->breadcrumbs(fn (Trail $trail) => $trail
+    ->parent('platform.index')
+    ->push(__('Restaurant Profile')));
+
 Route::screen('/restaurant/{restaurant}', RestaurantDetailScreen::class)
     ->name('platform.restaurant.detail')
     ->breadcrumbs(fn (Trail $trail, $restaurant) => $trail
@@ -146,13 +155,6 @@ Route::screen('/reservation/{reservation}/edit', ReservationEditScreen::class)
         ->parent('platform.reservation.list')
         ->push($reservation->exists ? __('Edit Reservation') : __('Create Reservation')));
 
-// Restaurant Profile
-Route::screen('/restaurant/profile/{restaurant?}', RestaurantProfileScreen::class)
-    ->name('platform.restaurant.profile')
-    ->breadcrumbs(fn (Trail $trail, $restaurant = null) => $trail
-        ->parent('platform.index')
-        ->push(__('Restaurant Profile')));
-
 // Customer Management
 Route::screen('/customer', CustomerListScreen::class)
     ->name('platform.customer.list')
@@ -165,3 +167,13 @@ Route::screen('/customer/{customer}/edit', CustomerEditScreen::class)
     ->breadcrumbs(fn (Trail $trail, $customer) => $trail
         ->parent('platform.customer.list')
         ->push($customer->exists ? $customer->full_name : 'Thêm khách hàng mới'));
+
+// Table Management Routes
+Route::screen('tables', TableListScreen::class)
+    ->name('platform.tables');
+
+Route::screen('tables/create', TableEditScreen::class)
+    ->name('platform.tables.create');
+
+Route::screen('tables/{table}/edit', TableEditScreen::class)
+    ->name('platform.tables.edit');

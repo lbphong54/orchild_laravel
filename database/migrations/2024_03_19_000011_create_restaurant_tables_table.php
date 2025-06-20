@@ -10,10 +10,11 @@ return new class extends Migration
     {
         Schema::create('restaurant_tables', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('restaurant_id')->constrained('restaurants');
-            $table->string('table_number', 20)->nullable();
-            $table->integer('capacity');
-            $table->enum('status', ['available', 'reserved', 'inactive'])->default('available');
+            $table->foreignId('restaurant_id')->constrained()->onDelete('cascade');
+            $table->string('name');
+            $table->integer('min_capacity');
+            $table->integer('max_capacity');
+            $table->enum('status', ['available', 'occupied', 'reserved'])->default('available');
             $table->timestamps();
         });
     }

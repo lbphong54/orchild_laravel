@@ -262,8 +262,9 @@ class RestaurantProfileScreen extends Screen
         return redirect()->route('platform.restaurant.profile');
     }
 
-    public function update(Restaurant $restaurant, Request $request)
+    public function update(Request $request)
     {
+        $restaurant = $this->query()['restaurant'];
         $request->validate([
             'restaurant.name' => 'required|string|max:100',
             'restaurant.address' => 'required|string|max:255',
@@ -278,11 +279,6 @@ class RestaurantProfileScreen extends Screen
         ]);
 
         $restaurantData = $request->get('restaurant');
-        
-        // Handle opening hours
-        if (isset($restaurantData['opening_hours'])) {
-            $restaurantData['opening_hours'] = json_encode($restaurantData['opening_hours']);
-        }
 
         $restaurant->update($restaurantData);
 
