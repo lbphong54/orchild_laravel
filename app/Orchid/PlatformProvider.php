@@ -58,6 +58,9 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon('bs.calendar')
                 ->title('Đặt bàn')
                 ->list([
+                    Menu::make('Bàn')
+                        ->icon('bs.table')
+                        ->route('platform.tables'),
                     Menu::make('Danh sách đặt bàn')
                         ->icon('bs.list')
                         ->route('platform.reservation.list'),

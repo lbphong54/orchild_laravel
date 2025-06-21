@@ -8,6 +8,7 @@ use App\Models\Amenity;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Orchid\Attachment\Models\Attachment;
 use Orchid\Screen\Screen;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Components\Cells\Text;
@@ -57,6 +58,7 @@ class RestaurantProfileScreen extends Screen
 
     public function layout(): array
     {
+        // dd($this->query()['restaurant']->images ?? []);
         return [
             Layout::rows([
                 Input::make('restaurant.name')
@@ -103,7 +105,8 @@ class RestaurantProfileScreen extends Screen
                 Upload::make('restaurant.menu_images')
                     ->title('Hình ảnh menu')
                     ->multiple()
-                    ->help('Tải lên hình ảnh menu nhà hàng'),
+                    ->help('Tải lên hình ảnh menu nhà hàng')
+                    ->value($this->query()['restaurant']->menu_images ?? []),
 
                 // Quill::make('restaurant.regulation')
                 //     ->title('Quy định')
@@ -123,7 +126,9 @@ class RestaurantProfileScreen extends Screen
 
                 Upload::make('restaurant.images')
                     ->title('Hình ảnh')
-                    ->multiple(),
+                    ->multiple()
+                    ->help('Tải lên hình ảnh nhà hàng')
+                    ->value($this->query()['restaurant']->images ?? []),
 
                 // Giờ hoạt động
                 Label::make('')->value('Thời gian hoạt động'),
@@ -232,7 +237,7 @@ class RestaurantProfileScreen extends Screen
 
         $restaurantData = $request->get('restaurant');
         $restaurantData['user_id'] = Auth::user()->id;
-        
+
         // Handle opening hours
         if (isset($restaurantData['opening_hours'])) {
             $restaurantData['opening_hours'] = json_encode($restaurantData['opening_hours']);
@@ -251,11 +256,17 @@ class RestaurantProfileScreen extends Screen
 
         // Handle images
         if ($request->has('restaurant.images')) {
-            $restaurant->images()->createMany(
-                collect($request->get('restaurant.images'))->map(function ($image) {
-                    return ['image_path' => $image];
-                })->toArray()
-            );
+            $images = $request->get('restaurant.images');
+            dd($images);
+            foreach ($images as $image) {
+                // Lưu file vào thư mục storage/app/public/restaurant-images
+                $path = $image->store('restaurant-images', 'public');
+
+                // Tạo record trong database
+                $restaurant->images()->create([
+                    'image_path' => $path
+                ]);
+            }
         }
 
         Toast::success('Thông tin nhà hàng đã được tạo thành công.');
@@ -276,6 +287,8 @@ class RestaurantProfileScreen extends Screen
             'restaurant.parking_info' => 'nullable|string|max:255',
             'restaurant.opening_hours' => 'nullable|array',
             'restaurant.status' => 'nullable|in:active,inactive',
+            'restaurant.images' => 'nullable|array',
+            'restaurant.menu_images' => 'nullable|array',
         ]);
 
         $restaurantData = $request->get('restaurant');
@@ -289,18 +302,6 @@ class RestaurantProfileScreen extends Screen
 
         if ($request->has('restaurant.amenities')) {
             $restaurant->amenities()->sync($request->get('restaurant.amenities'));
-        }
-
-        // Handle images
-        if ($request->has('restaurant.images')) {
-            // Delete old images if needed
-            // $restaurant->images()->delete();
-            
-            $restaurant->images()->createMany(
-                collect($request->get('restaurant.images'))->map(function ($image) {
-                    return ['image_path' => $image];
-                })->toArray()
-            );
         }
 
         Toast::success('Thông tin nhà hàng đã được cập nhật thành công.');

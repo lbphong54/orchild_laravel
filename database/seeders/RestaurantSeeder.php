@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Restaurant;
 use App\Models\RestaurantType;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class RestaurantSeeder extends Seeder
@@ -13,7 +14,13 @@ class RestaurantSeeder extends Seeder
      */
     public function run(): void
     {
-        $userIds = \App\Models\User::pluck('id')->toArray();
+        $userIds = User::pluck('id')->toArray();
+        
+        // Nếu không có user nào, tạo một user mặc định hoặc bỏ qua user_id
+        if (empty($userIds)) {
+            $userIds = [1]; // Giả sử user ID 1 tồn tại
+        }
+        
         $restaurants = [
             [
                 'name' => 'Nhà Hàng Việt Nam Sài Gòn',

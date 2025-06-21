@@ -27,6 +27,7 @@ use App\Orchid\Screens\Customer\CustomerEditScreen;
 use App\Orchid\Screens\Restaurant\RestaurantDetailScreen;
 use App\Orchid\Screens\Table\TableListScreen;
 use App\Orchid\Screens\Table\TableEditScreen;
+use App\Orchid\Screens\Table\TableGridViewScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -169,11 +170,20 @@ Route::screen('/customer/{customer}/edit', CustomerEditScreen::class)
         ->push($customer->exists ? $customer->full_name : 'Thêm khách hàng mới'));
 
 // Table Management Routes
-Route::screen('tables', TableListScreen::class)
-    ->name('platform.tables');
+Route::screen('tables', TableGridViewScreen::class)
+    ->name('platform.tables')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push(__('Tables'), route('platform.tables')));
 
 Route::screen('tables/create', TableEditScreen::class)
-    ->name('platform.tables.create');
+    ->name('platform.tables.create')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.tables')
+        ->push(__('Create Table')));
 
 Route::screen('tables/{table}/edit', TableEditScreen::class)
-    ->name('platform.tables.edit');
+    ->name('platform.tables.edit')
+    ->breadcrumbs(fn (Trail $trail, $table) => $trail
+        ->parent('platform.tables')
+        ->push(__('Edit Table')));

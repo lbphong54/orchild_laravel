@@ -20,10 +20,14 @@ class Restaurant extends Model
         'email',
         'opening_hours',
         'status',
+        'images',
+        'menu_images',
     ];
 
     protected $casts = [
         'opening_hours' => 'array',
+        'images' => 'array',
+        'menu_images' => 'array',
     ];
 
     public function types(): BelongsToMany
@@ -37,12 +41,7 @@ class Restaurant extends Model
             ->withPivot('value');
     }
 
-    public function images(): HasMany
-    {
-        return $this->hasMany(RestaurantImage::class);
-    }
-
-    public function tables(): HasMany
+    public function restaurantTables(): HasMany
     {
         return $this->hasMany(RestaurantTable::class);
     }

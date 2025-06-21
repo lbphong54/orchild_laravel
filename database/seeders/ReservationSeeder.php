@@ -30,6 +30,7 @@ class ReservationSeeder extends Seeder
                 'customer_id' => $customer->id,
                 'restaurant_id' => $restaurant->id,
                 // 'reservation_date' => $date->format('Y-m-d'),
+                'restaurant_table_id' => $restaurant->restaurantTables()->inRandomOrder()->first()->id,
                 'reservation_time' => $time,
                 'num_adults' => rand(1, 10),
                 'num_children' => rand(1, 10),

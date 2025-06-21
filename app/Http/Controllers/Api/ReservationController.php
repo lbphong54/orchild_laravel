@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Reservation;
 use App\Models\Restaurant;
+use App\Models\RestaurantTable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -17,7 +18,8 @@ class ReservationController extends Controller
             'adults' => 'required|integer|min:1',
             'children' => 'required|integer|min:0',
             'reservation_time' => 'required|date|after:now',
-            'special_request' => 'nullable|string|max:500'
+            'special_request' => 'nullable|string|max:500',
+            'restaurant_table_id' => 'required|exists:restaurant_tables,id'
         ]);
 
         if ($validator->fails()) {
@@ -29,7 +31,7 @@ class ReservationController extends Controller
         }
 
         $restaurant = Restaurant::findOrFail($request->restaurant_id);
-        
+        $restaurantTable = RestaurantTable::findOrFail($request->restaurant_table_id);
         // Calculate total guests
         $totalGuests = $request->adults + $request->children;
 
@@ -39,8 +41,11 @@ class ReservationController extends Controller
             'reservation_time' => $request->reservation_time,
             'number_of_guests' => $totalGuests,
             'special_request' => $request->special_request,
-            'status' => 'pending'
+            'status' => 'pending',
+            'restaurant_table_id' => $restaurantTable->id,
+            'is_paid' => false
         ]);
+ 
 
         return response()->json([
             'status' => 'success',
