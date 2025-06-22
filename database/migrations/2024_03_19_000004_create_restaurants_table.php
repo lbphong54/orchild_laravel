@@ -26,6 +26,7 @@ return new class extends Migration
             $table->enum('status', ['active', 'inactive'])->default('inactive');
             $table->json('images')->nullable();
             $table->json('menu_images')->nullable();
+            $table->float('rating')->default(5);
             $table->timestamps();
         });
     }

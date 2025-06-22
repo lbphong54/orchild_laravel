@@ -4,19 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Orchid\Screen\AsSource;
 
 class Review extends Model
 {
+    use AsSource;
     protected $fillable = [
         'customer_id',
         'restaurant_id',
+        'reservation_id',
         'rating',
         'comment',
-        'review_date',
     ];
 
     protected $casts = [
-        'review_date' => 'datetime',
         'rating' => 'integer',
     ];
 
@@ -28,5 +29,10 @@ class Review extends Model
     public function restaurant(): BelongsTo
     {
         return $this->belongsTo(Restaurant::class);
+    }
+
+    public function reservation(): BelongsTo
+    {
+        return $this->belongsTo(Reservation::class);
     }
 } 

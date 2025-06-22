@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Reservation;
 use App\Models\Customer;
+use App\Models\ReservationTable;
 use App\Models\Restaurant;
 use Illuminate\Database\Seeder;
 
@@ -24,18 +25,23 @@ class ReservationSeeder extends Seeder
             $status = $statuses[array_rand($statuses)];
             $date = now()->addDays(rand(-30, 30));
             $time = rand(10, 21) . ':' . (rand(0, 1) ? '00' : '30');
-            $total_amount = rand(200000, 2000000);
 
-            Reservation::create([
+            $reservation =Reservation::create([
                 'customer_id' => $customer->id,
                 'restaurant_id' => $restaurant->id,
                 // 'reservation_date' => $date->format('Y-m-d'),
-                'restaurant_table_id' => $restaurant->restaurantTables()->inRandomOrder()->first()->id,
-                'reservation_time' => $time,
+                'reservation_time' => $date->format('Y-m-d H:i:s'),
                 'num_adults' => rand(1, 10),
                 'num_children' => rand(1, 10),
                 'status' => $status,
                 'special_request' => rand(0, 1) ? 'Ghi chú đặc biệt cho đơn hàng #' . ($i + 1) : null,
+            ]);
+
+            ReservationTable::create([
+                'reservation_id' => $reservation->id,
+                'restaurant_table_id' => $restaurant->restaurantTables()->inRandomOrder()->first()->id,
+                'from_time' => $date->format('Y-m-d H:i:s'),
+                'to_time' => $date->addHours(rand(1, 3))->format('Y-m-d H:i:s'),
             ]);
         }
     }

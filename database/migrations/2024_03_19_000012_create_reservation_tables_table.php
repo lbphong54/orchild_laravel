@@ -10,8 +10,10 @@ return new class extends Migration
     {
         Schema::create('reservation_tables', function (Blueprint $table) {
             $table->foreignId('reservation_id')->constrained('reservations')->onDelete('cascade');
-            $table->foreignId('table_id')->constrained('restaurant_tables')->onDelete('cascade');
-            $table->primary(['reservation_id', 'table_id']);
+            $table->foreignId('restaurant_table_id')->constrained('restaurant_tables')->onDelete('cascade');
+            $table->dateTime('from_time');
+            $table->dateTime('to_time');
+            $table->primary(['reservation_id', 'restaurant_table_id']);
             $table->timestamps();
         });
     }

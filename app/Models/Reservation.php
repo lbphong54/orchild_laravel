@@ -14,9 +14,11 @@ class Reservation extends Model
         'customer_id',
         'restaurant_id',
         'reservation_time',
-        'number_of_guests',
+        'num_adults',
+        'num_children',
         'status',
         'special_request',
+        'is_paid',
     ];
 
     protected $casts = [
@@ -38,4 +40,9 @@ class Reservation extends Model
     {
         return $this->belongsToMany(RestaurantTable::class, 'reservation_tables');
     }
-} 
+
+    public function getTableIdsAttribute(): array
+    {
+        return $this->tables->pluck('id')->toArray();
+    }
+}
