@@ -3,6 +3,9 @@
 namespace App\Orchid\Screens\Reservation;
 
 use App\Models\Reservation;
+use App\Models\ReservationTable;
+use App\Models\Restaurant;
+use App\Models\RestaurantTable;
 use Orchid\Screen\Fields\Label;
 use Orchid\Screen\Screen;
 use Orchid\Screen\Actions\Link;
@@ -15,6 +18,7 @@ use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\Fields\DateTimer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReservationListScreen extends Screen
 {
@@ -25,21 +29,25 @@ class ReservationListScreen extends Screen
 
     public function query(): array
     {
+        $restaurantId = Restaurant::where('user_id', Auth::user()->id)->value('id');
+
         return [
-            'reservations' => Reservation::with(['restaurant', 'customer'])
+            'reservations' => Reservation::with(['restaurant', 'customer', 'tables'])
+                ->where('restaurant_id', $restaurantId)
                 ->orderBy('id', 'desc')
-                ->paginate()
+                ->paginate(),
         ];
     }
 
     public function commandBar(): array
     {
-        return [
-        ];
+        return [];
     }
 
     public function layout(): array
     {
+        $restaurantId = Restaurant::where('user_id', Auth::user()->id)->first();
+
         return [
             Layout::table('reservations', [
                 TD::make('id', 'ID')
@@ -90,14 +98,24 @@ class ReservationListScreen extends Screen
                     DateTimer::make('reservation.reservation_time')
                         ->title('Thời gian đặt bàn')
                         ->format('Y-m-d H:i')
+                        ->required()
                         ->enableTime()
                         ->format24hr(),
                     Input::make('reservation.num_adults')
                         ->type('number')
+                        ->required()
                         ->title('Số người lớn'),
                     Input::make('reservation.num_children')
                         ->type('number')
+                        ->required()
                         ->title('Số trẻ em'),
+
+                    Select::make('reservation.table_ids')
+                        ->title('Bàn đặt')
+                        ->required()
+                        ->fromQuery(RestaurantTable::where('restaurant_id', $restaurantId->id), 'name')
+                        ->multiple()
+                        ->help('Chọn bàn đặt'),
 
                     Select::make('reservation.status')
                         ->title('Trạng thái')
@@ -145,6 +163,10 @@ class ReservationListScreen extends Screen
 
         $reservation->save();
 
+        if (isset($data['table_ids'])) {
+            $pivotData = array_fill_keys($data['table_ids'], ['from_time' => $reservation->reservation_time, 'to_time' => $reservation->reservation_time->addHours(2)]);
+            $reservation->tables()->sync($pivotData);
+        }
 
         return redirect()->route('platform.reservation.list');
     }

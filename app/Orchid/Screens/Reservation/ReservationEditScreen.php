@@ -5,6 +5,8 @@ namespace App\Orchid\Screens\Reservation;
 use App\Models\Reservation;
 use App\Models\Restaurant;
 use App\Models\Customer;
+use App\Models\ReservationTable;
+use App\Models\RestaurantTable;
 use Illuminate\Http\Request;
 use Orchid\Screen\Screen;
 use Orchid\Screen\Actions\Button;

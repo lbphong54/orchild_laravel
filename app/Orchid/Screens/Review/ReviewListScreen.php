@@ -7,6 +7,7 @@ use Orchid\Screen\Screen;
 use Orchid\Screen\Actions\Link;
 use Orchid\Support\Facades\Layout;
 use Orchid\Screen\TD;
+use Orchid\Screen\Fields\Input;
 
 class ReviewListScreen extends Screen
 {
@@ -30,27 +31,32 @@ class ReviewListScreen extends Screen
             Layout::table('reviews', [
                 TD::make('id', 'ID')
                     ->sort()
-                    ->filter(),
+                    ->filter(Input::make()),
+
                 TD::make('restaurant.name', 'Nhà hàng')
                     ->sort()
-                    ->filter()
-                    ->render(fn (Review $review) => Link::make($review->restaurant->name)
-                        ->route('platform.restaurant.edit', $review->restaurant)),
-                TD::make('customer.name', 'Khách hàng')
+                    ->filter(Input::make())
+                    ->render(fn(Review $review) => Link::make($review->restaurant->name)
+                        ->route('platform.restaurant.detail', $review->restaurant)),
+
+                TD::make('customer.full_name', 'Khách hàng')
                     ->sort()
-                    ->filter(),
+                    ->filter(Input::make()),
+
                 TD::make('rating', 'Đánh giá')
                     ->sort()
-                    ->filter()
-                    ->render(fn (Review $review) => str_repeat('⭐', $review->rating)),
+                    ->filter(Input::make())
+                    ->render(fn(Review $review) => str_repeat('⭐', $review->rating)),
+
                 TD::make('comment', 'Nhận xét')
                     ->sort()
-                    ->filter()
+                    ->filter(Input::make())
                     ->width('300px'),
+
                 TD::make('created_at', 'Ngày tạo')
                     ->sort()
-                    ->render(fn (Review $review) => $review->created_at->format('d/m/Y H:i')),
+                    ->render(fn(Review $review) => $review->created_at->format('d/m/Y H:i')),
             ])
         ];
     }
-} 
+}

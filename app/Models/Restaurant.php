@@ -22,12 +22,14 @@ class Restaurant extends Model
         'status',
         'images',
         'menu_images',
+        'rating',
     ];
 
     protected $casts = [
         'opening_hours' => 'array',
         'images' => 'array',
         'menu_images' => 'array',
+        'rating' => 'float',
     ];
 
     public function types(): BelongsToMany
