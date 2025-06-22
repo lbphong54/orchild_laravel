@@ -12,7 +12,7 @@ class ReservationTable extends Model
     use AsSource;
     protected $fillable = [
         'reservation_id',
-        'table_id',
+        'restaurant_table_id',
         'from_time',
         'to_time',
     ];

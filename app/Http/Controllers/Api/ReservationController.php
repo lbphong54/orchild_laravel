@@ -47,7 +47,7 @@ class ReservationController extends Controller
 
         // check table time is available
         $tableTime = ReservationTable::query()
-            ->whereIn('table_id', $request->table_ids)
+            ->whereIn('restaurant_table_id', $request->table_ids)
             ->where('from_time', '<=', $request->reservation_time)
             ->where('to_time', '>=', Carbon::parse($request->reservation_time)->addHours(2))->first();
         if ($tableTime) {
