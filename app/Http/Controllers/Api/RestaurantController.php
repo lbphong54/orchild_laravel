@@ -48,4 +48,15 @@ class RestaurantController extends Controller
             'data' => $restaurant
         ]);
     }
+
+    public function related($id)
+    {
+    $restaurant = Restaurant::find($id);
+    if (!$restaurant) {
+        return response()->json(['data' => []]);
+    }
+    // Nếu không có trường type, chỉ lấy 4 nhà hàng khác bất kỳ
+    $related = Restaurant::where('id', '!=', $id)->inRandomOrder()->limit(4)->get();
+    return response()->json(['data' => $related]);
+    }
 }

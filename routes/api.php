@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\RestaurantTypeController;
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/restaurants/{id}/related', [RestaurantController::class, 'related']);
 
 // Restaurant routes
 Route::get('/restaurants', [RestaurantController::class, 'index']);
