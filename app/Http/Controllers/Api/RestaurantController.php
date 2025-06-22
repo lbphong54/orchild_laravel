@@ -10,7 +10,7 @@ class RestaurantController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Restaurant::select('id', 'name', 'address', 'price_range')
+        $query = Restaurant::select('id', 'name', 'address', 'price_range', 'rating')
             ->with(['types']);
         // ->where('status', 'active');
 

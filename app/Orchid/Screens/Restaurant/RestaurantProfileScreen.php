@@ -38,7 +38,7 @@ class RestaurantProfileScreen extends Screen
 
     public function query(): array
     {
-        $restaurant = Restaurant::where('user_id', Auth::user()->id)->first();
+        $restaurant = Restaurant::with('types', 'amenities')->where('user_id', Auth::user()->id)->first();
 
         return [
             'restaurant' => $restaurant,
@@ -58,7 +58,6 @@ class RestaurantProfileScreen extends Screen
 
     public function layout(): array
     {
-        // dd($this->query()['restaurant']->images ?? []);
         return [
             Layout::rows([
                 Input::make('restaurant.name')
@@ -75,8 +74,8 @@ class RestaurantProfileScreen extends Screen
                     ->value('active')
                     ->help('Chọn trạng thái hoạt động của nhà hàng'),
 
-                Select::make('restaurant.types.')
-                    ->fromModel(RestaurantType::class, 'name')
+                Select::make('restaurant.types')
+                    ->fromModel(RestaurantType::class, 'name', 'id')
                     ->title('Loại nhà hàng')
                     ->multiple()
                     ->help('Chọn các loại nhà hàng'),
@@ -297,11 +296,11 @@ class RestaurantProfileScreen extends Screen
 
         // Handle relationships
         if ($request->has('restaurant.types')) {
-            $restaurant->types()->sync($request->get('restaurant.types'));
+            $restaurant->types()->sync($request->input('restaurant.types'));
         }
 
         if ($request->has('restaurant.amenities')) {
-            $restaurant->amenities()->sync($request->get('restaurant.amenities'));
+            $restaurant->amenities()->sync($request->input('restaurant.amenities'));
         }
 
         Toast::success('Thông tin nhà hàng đã được cập nhật thành công.');
