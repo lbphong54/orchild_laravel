@@ -41,7 +41,12 @@ class ReservationListScreen extends Screen
 
     public function commandBar(): array
     {
-        return [];
+        return [
+        ModalToggle::make('Tạo đơn mới')
+            ->modal('createReservation')
+            ->method('create')
+            ->icon('plus'),
+        ];
     }
 
     public function layout(): array
@@ -129,6 +134,43 @@ class ReservationListScreen extends Screen
                         ->title('Ghi chú'),
                 ]),
             ])->title('Chi tiết đơn đặt bàn')->async('asyncGetReservation'),
+
+            Layout::modal('createReservation', [
+                Layout::rows([
+                    DateTimer::make('reservation.reservation_time')
+                        ->title('Thời gian đặt bàn')
+                        ->format('Y-m-d H:i')
+                        ->required()
+                        ->enableTime()
+                        ->format24hr(),
+                    Input::make('reservation.num_adults')
+                        ->type('number')
+                        ->required()
+                        ->title('Số người lớn'),
+                    Input::make('reservation.num_children')
+                        ->type('number')
+                        ->required()
+                        ->title('Số trẻ em'),
+
+                    Select::make('reservation.table_ids')
+                        ->title('Bàn đặt')
+                        ->required()
+                        ->fromQuery(RestaurantTable::where('restaurant_id', $restaurantId->id), 'name')
+                        ->multiple()
+                        ->help('Chọn bàn đặt'),
+
+                    Select::make('reservation.status')
+                        ->title('Trạng thái')
+                        ->options([
+                            'pending' => 'Chờ xác nhận',
+                            'confirmed' => 'Đã xác nhận',
+                            'cancelled' => 'Đã hủy',
+                            'completed' => 'Hoàn thành',
+                        ]),
+                    TextArea::make('reservation.special_request')
+                        ->title('Ghi chú'),
+                ]),
+            ])->title('Tạo đơn đặt bàn')->applyButton('Tạo mới')->method('create'),
         ];
     }
 
@@ -165,6 +207,31 @@ class ReservationListScreen extends Screen
 
         if (isset($data['table_ids'])) {
             $pivotData = array_fill_keys($data['table_ids'], ['from_time' => $reservation->reservation_time, 'to_time' => $reservation->reservation_time->addHours(2)]);
+            $reservation->tables()->sync($pivotData);
+        }
+
+        return redirect()->route('platform.reservation.list');
+    }
+
+    public function create(Request $request)
+    {
+        $data = $request->input('reservation');
+        $restaurantId = Restaurant::where('user_id', Auth::user()->id)->value('id');
+
+        $reservation = new Reservation();
+        $reservation->restaurant_id = $restaurantId;
+        $reservation->status = $data['status'] ?? 'pending';
+        $reservation->reservation_time = $data['reservation_time'];
+        $reservation->num_adults = $data['num_adults'] ?? 0;
+        $reservation->num_children = $data['num_children'] ?? 0;
+        $reservation->special_request = $data['special_request'] ?? null;
+        $reservation->save();
+
+        if (isset($data['table_ids'])) {
+            $pivotData = array_fill_keys($data['table_ids'], [
+                'from_time' => $reservation->reservation_time,
+                'to_time' => now()->parse($reservation->reservation_time)->addHours(2),
+            ]);
             $reservation->tables()->sync($pivotData);
         }
 

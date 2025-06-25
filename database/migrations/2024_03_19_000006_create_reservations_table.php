@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_id')->constrained('customers');
+            $table->foreignId('customer_id')->nullable()->constrained('customers');
             $table->foreignId('restaurant_id')->constrained('restaurants');
             $table->dateTime('reservation_time');
             $table->integer('num_adults');
