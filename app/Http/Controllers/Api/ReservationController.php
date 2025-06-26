@@ -33,18 +33,6 @@ class ReservationController extends Controller
             ], 422);
         }
 
-        // Create reservation
-        $reservation = Reservation::create([
-            'customer_id' => Auth::user()->id,
-            'restaurant_id' => $request->restaurant_id,
-            'reservation_time' => $request->reservation_time,
-            'num_adults' => $request->adults,
-            'num_children' => $request->children,
-            'special_request' => $request->special_request,
-            'status' => 'pending',
-            'is_paid' => false
-        ]);
-
         // check table time is available
         $tableTime = ReservationTable::query()
             ->whereIn('restaurant_table_id', $request->table_ids)
@@ -56,6 +44,18 @@ class ReservationController extends Controller
                 'message' => 'Bàn ' . $tableTime->table->name . ' đã được đặt trong khoảng thời gian bạn chọn.'
             ], 400);
         }
+
+        // Create reservation
+        $reservation = Reservation::create([
+            'customer_id' => Auth::user()->id,
+            'restaurant_id' => $request->restaurant_id,
+            'reservation_time' => $request->reservation_time,
+            'num_adults' => $request->adults,
+            'num_children' => $request->children,
+            'special_request' => $request->special_request,
+            'status' => 'pending',
+            'is_paid' => false
+        ]);
 
         foreach ($request->table_ids as $tableId) {
             ReservationTable::create([
@@ -80,5 +80,26 @@ class ReservationController extends Controller
         $reservation = Reservation::findOrFail($id);
         $reservation->update($request->all());
         return response()->json($reservation);
+    }
+
+    /**
+     * Lấy lịch sử đặt bàn của user đăng nhập, có phân trang.
+     */
+    public function history(Request $request)
+    {
+        $user = Auth::user();
+
+        $perPage = $request->input('limit', 10);
+        $page = $request->input('page', 1);
+
+        $reservations = Reservation::with(['restaurant:id,name,address,phone', 'tables:id,name'])
+            ->where('customer_id', $user->id)
+            ->orderBy('reservation_time', 'desc')
+            ->paginate($perPage, ['*'], 'page', $page);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $reservations
+        ]);
     }
 }

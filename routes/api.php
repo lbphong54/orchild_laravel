@@ -35,5 +35,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/reservations', [ReservationController::class, 'store']);
-    Route::post('/restaurants/{id}/reviews', [ReviewController::class, 'store']);
+    Route::post('/restaurants/{id}/reviews', action: [ReviewController::class, 'store']);
+    Route::get('/reservations/history', [ReservationController::class, 'history']);
 }); 

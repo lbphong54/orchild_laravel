@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\OtpMail;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -36,7 +38,8 @@ class AuthController extends Controller
         ]);
 
         $token = $customer->createToken('auth_token')->plainTextToken;
-
+        // Gửi mail
+        Mail::to($request->email)->send(new OtpMail('123'));
         return response()->json([
             'status' => 'success',
             'message' => 'Customer registered successfully',
