@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ReservationSuccessMail;
 use App\Models\Reservation;
 use App\Models\ReservationTable;
 use App\Models\Restaurant;
@@ -10,6 +11,7 @@ use App\Models\RestaurantTable;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class ReservationController extends Controller
@@ -17,6 +19,9 @@ class ReservationController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:500',
+            'email' => 'required|email|max:500',
+            'phone' => 'required|string|max:11',
             'restaurant_id' => 'required|exists:restaurants,id',
             'adults' => 'required|integer|min:1',
             'children' => 'required|integer|min:0',
@@ -66,6 +71,9 @@ class ReservationController extends Controller
             ]);
         }
 
+        Mail::to($request->email)->send(new ReservationSuccessMail(
+            $adults, $children, $orderCode, $reservationTime, $tableNumber
+        ));
 
         return response()->json([
             'status' => 'success',
