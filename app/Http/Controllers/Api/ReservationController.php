@@ -71,8 +71,15 @@ class ReservationController extends Controller
             ]);
         }
 
+        $tableNames = RestaurantTable::whereIn('id', $request->table_ids)->pluck('name')->toArray();
+        $tableNameString = implode(', ', $tableNames);
+
         Mail::to($request->email)->send(new ReservationSuccessMail(
-            $adults, $children, $orderCode, $reservationTime, $tableNumber
+            $request->adults,
+            $request->children,
+            $reservation->id,
+            $request->reservation_time,
+            $tableNameString
         ));
 
         return response()->json([
