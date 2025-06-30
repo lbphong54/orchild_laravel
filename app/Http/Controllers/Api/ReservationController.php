@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendReservationCancellationJob;
 use App\Mail\ReservationSuccessMail;
 use App\Models\Reservation;
 use App\Models\ReservationTable;
@@ -95,6 +96,77 @@ class ReservationController extends Controller
         $reservation = Reservation::findOrFail($id);
         $reservation->update($request->all());
         return response()->json($reservation);
+    }
+
+    /**
+     * Hủy đơn đặt bàn
+     */
+    public function cancel(Request $request, $id)
+    {
+        $reservation = Reservation::with(['customer', 'restaurant'])
+            ->where('id', $id)
+            ->where('customer_id', Auth::user()->id)
+            ->first();
+
+        if (!$reservation) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Đơn đặt bàn không tồn tại hoặc bạn không có quyền hủy'
+            ], 404);
+        }
+
+        // Kiểm tra trạng thái đơn hàng
+        if ($reservation->status === 'cancelled') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Đơn hàng đã được hủy trước đó'
+            ], 400);
+        }
+
+        if ($reservation->status === 'completed') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Không thể hủy đơn hàng đã hoàn thành'
+            ], 400);
+        }
+
+        // Kiểm tra thời gian hủy
+        $now = Carbon::now();
+        $hoursBeforeReservation = $now->diffInHours($reservation->reservation_time, false);
+        
+        // Không cho phép hủy nếu đã quá thời gian đặt bàn
+        if ($hoursBeforeReservation < 0) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Không thể hủy đơn hàng đã quá thời gian đặt bàn'
+            ], 400);
+        }
+
+        // Cập nhật trạng thái đơn hàng
+        $reservation->status = 'cancelled';
+        $reservation->save();
+
+        // Gửi email thông báo hủy đơn hàng
+        SendReservationCancellationJob::dispatch($reservation, $now);
+
+        // Xóa các bàn đã đặt
+        $reservation->tables()->detach();
+
+        $refundMessage = $hoursBeforeReservation >= 1 
+            ? 'Đơn hàng sẽ được hoàn tiền trong vòng 3-5 ngày làm việc.'
+            : 'Do hủy đơn trong vòng 1 giờ trước thời gian đặt bàn, đơn hàng không được hoàn tiền.';
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Hủy đơn hàng thành công',
+            'data' => [
+                'reservation_id' => $reservation->id,
+                'cancellation_time' => $now->format('Y-m-d H:i:s'),
+                'hours_before_reservation' => $hoursBeforeReservation,
+                'is_refundable' => $hoursBeforeReservation >= 1,
+                'refund_message' => $refundMessage
+            ]
+        ]);
     }
 
     /**

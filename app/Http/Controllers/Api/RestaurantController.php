@@ -5,14 +5,15 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
+use Orchid\Attachment\Models\Attachment;
 
 class RestaurantController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Restaurant::select('id', 'name', 'address', 'price_range', 'rating')
-            ->with(['types']);
-        // ->where('status', 'active');
+        $query = Restaurant::select('id', 'name', 'address', 'price_range', 'rating', 'avatar')
+            ->with(['types'])
+            ->where('status', 'active');
 
         // Filter by type_id if provided
         if ($request->has('type_id')) {
@@ -26,6 +27,18 @@ class RestaurantController extends Controller
         $page = $request->get('page', 1);
 
         $restaurants = $query->paginate($perPage, ['*'], 'page', $page);
+
+        $restaurants->getCollection()->transform(function ($restaurant) {
+
+            $avatarUrl = null;
+            if ($restaurant->avatar) {
+                $attachment = Attachment::find($restaurant->avatar[0]);
+                $avatarUrl = $attachment ? $attachment->url() : null;
+            }
+
+            $restaurant->avatar = $avatarUrl;
+            return $restaurant;
+        });
 
         return response()->json([
             'status' => 'success',
@@ -51,12 +64,12 @@ class RestaurantController extends Controller
 
     public function related($id)
     {
-    $restaurant = Restaurant::find($id);
-    if (!$restaurant) {
-        return response()->json(['data' => []]);
-    }
-    // Nếu không có trường type, chỉ lấy 4 nhà hàng khác bất kỳ
-    $related = Restaurant::where('id', '!=', $id)->inRandomOrder()->limit(4)->get();
-    return response()->json(['data' => $related]);
+        $restaurant = Restaurant::find($id);
+        if (!$restaurant) {
+            return response()->json(['data' => []]);
+        }
+        // Nếu không có trường type, chỉ lấy 4 nhà hàng khác bất kỳ
+        $related = Restaurant::where('id', '!=', $id)->inRandomOrder()->limit(4)->get();
+        return response()->json(['data' => $related]);
     }
 }

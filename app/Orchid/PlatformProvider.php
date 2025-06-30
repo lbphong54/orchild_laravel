@@ -22,8 +22,6 @@ class PlatformProvider extends OrchidServiceProvider
     public function boot(Dashboard $dashboard): void
     {
         parent::boot($dashboard);
-
-        // ...
     }
 
     /**
@@ -81,9 +79,9 @@ class PlatformProvider extends OrchidServiceProvider
                         ->route('platform.review.list'),
                 ]),
 
-            Menu::make(__('Cấu hình'))
-                ->icon('bs.gear')
-                ->route('platform.configurations'),
+            Menu::make('Thống kê')
+                ->icon('bs.bar-chart')
+                ->route('platform.stats'),
 
             Menu::make(__('Users'))
                 ->icon('bs.people')

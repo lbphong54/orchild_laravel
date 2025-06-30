@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users');
             $table->string('name', 100);
+            $table->json('avatar')->nullable();
             $table->string('address', 255);
             $table->string('phone', 20)->nullable();
             $table->string('email', 100)->nullable();

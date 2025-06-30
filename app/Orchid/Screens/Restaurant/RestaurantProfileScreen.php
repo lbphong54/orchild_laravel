@@ -74,6 +74,13 @@ class RestaurantProfileScreen extends Screen
                     ->value('active')
                     ->help('Chọn trạng thái hoạt động của nhà hàng'),
 
+                Upload::make('restaurant.avatar')
+                    ->title('Hình ảnh đại diện')
+                    ->help('Tải lên hình ảnh đại diện nhà hàng')
+                    ->value($this->query()['restaurant']->avatar ?? null)
+                    ->maxFiles(1)
+                    ->required(),
+
                 Select::make('restaurant.types')
                     ->fromModel(RestaurantType::class, 'name', 'id')
                     ->title('Loại nhà hàng')
@@ -225,6 +232,7 @@ class RestaurantProfileScreen extends Screen
             'restaurant.name' => 'required|string|max:100',
             'restaurant.address' => 'required|string|max:255',
             'restaurant.phone' => 'nullable|string|max:20',
+            'restaurant.avatar' => 'required|array',
             'restaurant.email' => 'nullable|email|max:100',
             'restaurant.summary' => 'nullable|string',
             'restaurant.description' => 'nullable|string',
@@ -253,21 +261,6 @@ class RestaurantProfileScreen extends Screen
             $restaurant->amenities()->sync($request->get('restaurant.amenities'));
         }
 
-        // Handle images
-        if ($request->has('restaurant.images')) {
-            $images = $request->get('restaurant.images');
-            dd($images);
-            foreach ($images as $image) {
-                // Lưu file vào thư mục storage/app/public/restaurant-images
-                $path = $image->store('restaurant-images', 'public');
-
-                // Tạo record trong database
-                $restaurant->images()->create([
-                    'image_path' => $path
-                ]);
-            }
-        }
-
         Toast::success('Thông tin nhà hàng đã được tạo thành công.');
         return redirect()->route('platform.restaurant.profile');
     }
@@ -280,6 +273,7 @@ class RestaurantProfileScreen extends Screen
             'restaurant.address' => 'required|string|max:255',
             'restaurant.phone' => 'nullable|string|max:20',
             'restaurant.email' => 'nullable|email|max:100',
+            'restaurant.avatar' => 'required|array',
             'restaurant.summary' => 'nullable|string',
             'restaurant.description' => 'nullable|string',
             'restaurant.regulation' => 'nullable|string',
@@ -291,7 +285,6 @@ class RestaurantProfileScreen extends Screen
         ]);
 
         $restaurantData = $request->get('restaurant');
-
         $restaurant->update($restaurantData);
 
         // Handle relationships

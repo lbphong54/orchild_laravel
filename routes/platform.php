@@ -28,6 +28,8 @@ use App\Orchid\Screens\Restaurant\RestaurantDetailScreen;
 use App\Orchid\Screens\Table\TableListScreen;
 use App\Orchid\Screens\Table\TableEditScreen;
 use App\Orchid\Screens\Table\TableGridViewScreen;
+use App\Orchid\Screens\Restaurant\RestaurantStatsScreen;
+use App\Orchid\Screens\AdminStatsScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -109,6 +111,13 @@ Route::screen('/restaurant', RestaurantListScreen::class)
         ->parent('platform.index')
         ->push(__('Restaurants')));
 
+// Restaurant Statistics
+Route::screen('/restaurant/stats', RestaurantStatsScreen::class)
+    ->name('platform.restaurant.stats')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.restaurant.list')
+        ->push('Thống kê nhà hàng'));
+
         // Restaurant Profile
 Route::screen('/restaurant/profile', RestaurantProfileScreen::class)
 ->name('platform.restaurant.profile')
@@ -187,3 +196,10 @@ Route::screen('tables/{table}/edit', TableEditScreen::class)
     ->breadcrumbs(fn (Trail $trail, $table) => $trail
         ->parent('platform.tables')
         ->push(__('Edit Table')));
+
+// Admin Statistics
+Route::screen('/stats', AdminStatsScreen::class)
+    ->name('platform.stats')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push('Thống kê hệ thống'));

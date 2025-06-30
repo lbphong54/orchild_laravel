@@ -22,6 +22,8 @@ use App\Http\Controllers\Api\RestaurantTypeController;
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
+Route::post('/resend-otp', [AuthController::class, 'resendOtp']);
 Route::get('/restaurants/{id}/related', [RestaurantController::class, 'related']);
 
 // Restaurant routes
@@ -35,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/reservations', [ReservationController::class, 'store']);
+    Route::post('/reservations/{id}/cancel', [ReservationController::class, 'cancel']);
     Route::post('/restaurants/{id}/reviews', action: [ReviewController::class, 'store']);
     Route::get('/reservations/history', [ReservationController::class, 'history']);
 }); 

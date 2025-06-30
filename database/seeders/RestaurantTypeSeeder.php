@@ -14,44 +14,44 @@ class RestaurantTypeSeeder extends Seeder
     {
         $types = [
             [
-                'name' => 'Nhà hàng Việt Nam',
-                'description' => 'Phục vụ các món ăn truyền thống Việt Nam',
+                'name' => 'Buffet Hải sản',
+                'description' => 'Buffet với nhiều món hải sản tươi sống đa dạng.',
             ],
             [
-                'name' => 'Nhà hàng Nhật Bản',
-                'description' => 'Phục vụ các món ăn Nhật Bản như sushi, sashimi, ramen',
+                'name' => 'Buffet Lẩu',
+                'description' => 'Buffet các loại lẩu: lẩu Thái, lẩu nấm, lẩu Hàn Quốc...',
             ],
             [
-                'name' => 'Nhà hàng Hàn Quốc',
-                'description' => 'Phục vụ các món ăn Hàn Quốc như BBQ, kimchi, bibimbap',
+                'name' => 'Buffet Nướng',
+                'description' => 'Buffet các món nướng phong phú như bò, gà, hải sản...',
             ],
             [
-                'name' => 'Nhà hàng Trung Hoa',
-                'description' => 'Phục vụ các món ăn Trung Hoa như dimsum, lẩu, mì xào',
+                'name' => 'Buffet Chay',
+                'description' => 'Buffet các món chay thanh đạm, phong phú từ rau củ quả.',
             ],
             [
-                'name' => 'Nhà hàng Âu',
-                'description' => 'Phục vụ các món ăn phương Tây như steak, pasta, pizza',
+                'name' => 'Buffet Quốc tế',
+                'description' => 'Buffet đa dạng phong cách Âu, Á, Việt, Nhật, Hàn...',
             ],
             [
-                'name' => 'Quán Cafe',
-                'description' => 'Phục vụ đồ uống và bánh ngọt',
+                'name' => 'Buffet Trưa',
+                'description' => 'Buffet phục vụ buổi trưa với nhiều món ăn phù hợp công sở.',
             ],
             [
-                'name' => 'Quán Bar',
-                'description' => 'Phục vụ đồ uống có cồn và đồ ăn nhẹ',
+                'name' => 'Buffet Tối',
+                'description' => 'Buffet phục vụ buổi tối với thực đơn mở rộng và phong phú.',
             ],
             [
-                'name' => 'Nhà hàng Hải sản',
-                'description' => 'Chuyên phục vụ các món hải sản tươi sống',
+                'name' => 'Buffet Tráng miệng',
+                'description' => 'Buffet các loại bánh ngọt, trái cây, kem và món tráng miệng.',
             ],
             [
-                'name' => 'Nhà hàng Chay',
-                'description' => 'Phục vụ các món ăn chay',
+                'name' => 'Buffet Gia đình',
+                'description' => 'Buffet phù hợp cho gia đình, nhiều sự lựa chọn cho trẻ em.',
             ],
             [
-                'name' => 'Nhà hàng Buffet',
-                'description' => 'Phục vụ buffet với nhiều món ăn đa dạng',
+                'name' => 'Buffet Đồ nướng & Lẩu',
+                'description' => 'Kết hợp buffet lẩu và nướng với nhiều loại nước chấm đặc sản.',
             ],
         ];
 
@@ -59,4 +59,4 @@ class RestaurantTypeSeeder extends Seeder
             RestaurantType::create($type);
         }
     }
-} 
+}

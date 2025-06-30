@@ -50,23 +50,51 @@ class RestaurantDetailScreen extends Screen
                         ->title('Email'),
                 ]),
 
-                Group::make([
-                    Label::make('restaurant.opening_hours')
-                        ->title('Giờ mở cửa'),
-                    Label::make('restaurant.closing_hours')
-                        ->title('Giờ đóng cửa'),
-                    Label::make('restaurant.status')
-                        ->title('Trạng thái'),
-                    // ->value(fn ($restaurant) => $restaurant->status ? 'Đang hoạt động' : 'Đóng cửa'),
-                ]),
+                // Group::make([
+                //     Label::make('restaurant.opening_hours')
+                //         ->title('Giờ mở cửa')
+                //         ->value(function ($restaurant) {
+                //             if (!$restaurant->opening_hours || !is_array($restaurant->opening_hours)) {
+                //                 return 'Chưa cập nhật';
+                //             }
+                            
+                //             $days = [
+                //                 'monday' => 'Thứ 2',
+                //                 'tuesday' => 'Thứ 3', 
+                //                 'wednesday' => 'Thứ 4',
+                //                 'thursday' => 'Thứ 5',
+                //                 'friday' => 'Thứ 6',
+                //                 'saturday' => 'Thứ 7',
+                //                 'sunday' => 'Chủ nhật'
+                //             ];
+                            
+                //             $formatted = [];
+                //             foreach ($restaurant->opening_hours as $day => $hours) {
+                //                 if (isset($hours['open']) && isset($hours['close'])) {
+                //                     $formatted[] = $days[$day] . ': ' . $hours['open'] . ' - ' . $hours['close'];
+                //                 }
+                //             }
+                            
+                //             return empty($formatted) ? 'Chưa cập nhật' : implode(', ', $formatted);
+                //         }),
+                //     Label::make('restaurant.status')
+                //         ->title('Trạng thái')
+                //         ->value(function ($restaurant) {
+                //             return $restaurant->status === 'active' ? 'Đang hoạt động' : 'Đóng cửa';
+                //         }),
+                // ]),
 
                 // Group::make([
                 //     Label::make('restaurant.types')
                 //         ->title('Loại nhà hàng')
-                //         ->value(fn ($restaurant) => $restaurant->types->pluck('name')->implode(', ')),
+                //         ->value(function ($restaurant) {
+                //             return $restaurant->types->pluck('name')->implode(', ');
+                //         }),
                 //     Label::make('restaurant.amenities')
                 //         ->title('Tiện ích')
-                //         ->value(fn ($restaurant) => $restaurant->amenities->pluck('name')->implode(', ')),
+                //         ->value(function ($restaurant) {
+                //             return $restaurant->amenities->pluck('name')->implode(', ');
+                //         }),
                 // ]),
             ]),
         ];

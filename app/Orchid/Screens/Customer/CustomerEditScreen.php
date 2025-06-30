@@ -63,11 +63,6 @@ class CustomerEditScreen extends Screen
                 ->method('createOrUpdate')
                 ->canSee(!$this->customer->exists),
 
-            Button::make('Cập nhật')
-                ->icon('note')
-                ->method('createOrUpdate')
-                ->canSee($this->customer->exists),
-
             Button::make('Xóa')
                 ->icon('trash')
                 ->method('remove')

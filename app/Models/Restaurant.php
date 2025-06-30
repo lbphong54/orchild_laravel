@@ -20,6 +20,7 @@ class Restaurant extends Model
         'email',
         'opening_hours',
         'status',
+        'avatar',
         'images',
         'menu_images',
         'rating',
@@ -30,6 +31,7 @@ class Restaurant extends Model
         'images' => 'array',
         'menu_images' => 'array',
         'rating' => 'float',
+        'avatar' => 'array',
     ];
 
     public function types(): BelongsToMany

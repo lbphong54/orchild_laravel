@@ -2,6 +2,7 @@
 
 namespace App\Orchid\Screens\Reservation;
 
+use App\Jobs\SendReservationCancellationJob;
 use App\Models\Reservation;
 use App\Models\ReservationTable;
 use App\Models\Restaurant;
@@ -19,6 +20,7 @@ use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\Fields\DateTimer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class ReservationListScreen extends Screen
 {
@@ -195,6 +197,7 @@ class ReservationListScreen extends Screen
     public function update(Request $request)
     {
         $reservation = Reservation::findOrFail($request->get('reservation'));
+        $oldStatus = $reservation->status;
 
         $data = $request->input('reservation');
         $reservation->status = $data['status'];
@@ -204,6 +207,17 @@ class ReservationListScreen extends Screen
         $reservation->special_request = $data['special_request'] ?? null;
 
         $reservation->save();
+
+        // Gửi email thông báo hủy đơn hàng nếu trạng thái thay đổi thành cancelled
+        if ($oldStatus !== 'cancelled' && $data['status'] === 'cancelled') {
+            $now = Carbon::now();
+            $hoursBeforeReservation = $now->diffInHours($reservation->reservation_time, false);
+            
+            // Chỉ gửi email nếu chưa quá thời gian đặt bàn
+            if ($hoursBeforeReservation >= 0) {
+                SendReservationCancellationJob::dispatch($reservation, $now);
+            }
+        }
 
         if (isset($data['table_ids'])) {
             $pivotData = array_fill_keys($data['table_ids'], ['from_time' => $reservation->reservation_time, 'to_time' => $reservation->reservation_time->addHours(2)]);
