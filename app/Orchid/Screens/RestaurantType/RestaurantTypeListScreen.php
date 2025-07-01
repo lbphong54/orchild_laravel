@@ -5,6 +5,7 @@ namespace App\Orchid\Screens\RestaurantType;
 use App\Models\RestaurantType;
 use Illuminate\Http\Request;
 use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Fields\Upload;
 use Orchid\Screen\Screen;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
@@ -71,6 +72,10 @@ class RestaurantTypeListScreen extends Screen
                     Input::make('name')
                         ->title('Tên loại')
                         ->required(),
+                    Upload::make('image')
+                        ->title('Hình ảnh')
+                        ->type('file')
+                        ->required(),
                     TextArea::make('description')
                         ->title('Mô tả'),
                 ])
@@ -82,6 +87,10 @@ class RestaurantTypeListScreen extends Screen
                 Layout::rows([
                     Input::make('restaurantType.name')
                         ->title('Tên loại')
+                        ->required(),
+                    Upload::make('restaurantType.image')
+                        ->title('Hình ảnh')
+                        ->type('file')
                         ->required(),
                     TextArea::make('restaurantType.description')
                         ->title('Mô tả'),
@@ -104,6 +113,7 @@ class RestaurantTypeListScreen extends Screen
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'image' => 'required|array',
             'description' => 'nullable|string',
         ]);
 
@@ -116,12 +126,14 @@ class RestaurantTypeListScreen extends Screen
     {
         $request->validate([
             'restaurantType.name' => 'required|string|max:255',
+            'restaurantType.image' => 'required|array',
             'restaurantType.description' => 'nullable|string',
         ]);
 
         $restaurantType->update([
             'name' => $request->input('restaurantType.name'),
-            'description' => $request->input('restaurantType.description')
+            'description' => $request->input('restaurantType.description'),
+            'image' => $request->input('restaurantType.image'),
         ]);
 
         Toast::success('Cập nhật loại nhà hàng thành công');

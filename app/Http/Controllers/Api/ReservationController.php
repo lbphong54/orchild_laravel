@@ -197,4 +197,31 @@ class ReservationController extends Controller
             'data' => $reservations
         ]);
     }
+
+    // Lấy thông tin tạo mã QR để thanh toán
+    public function getQrCode($id)
+    {
+        $reservation = Reservation::with(['restaurant:id,name,address,phone,bank_code,bank_account_number,deposit_adult,deposit_child'])
+            ->where('id', $id)
+            ->where('customer_id', Auth::user()->id)
+            ->first();
+
+        if (!$reservation) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Đơn đặt bàn không tồn tại hoặc bạn không có quyền tạo mã QR'
+            ], 404);
+        }
+
+        $amount = $reservation->num_adults * $reservation->restaurant->deposit_adult + $reservation->num_children * $reservation->restaurant->deposit_child;
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'amount' => $amount,
+                'bank_code' => $reservation->restaurant->bank_code,
+                'bank_account_number' => $reservation->restaurant->bank_account_number
+            ]
+        ]);
+    }
 }

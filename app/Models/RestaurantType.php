@@ -12,8 +12,12 @@ class RestaurantType extends Model
     protected $fillable = [
         'name',
         'description',
+        'image',
         'created_at',
         'updated_at',
+    ];
+    protected $casts = [
+        'image' => 'array',
     ];
 
     public function restaurants(): BelongsToMany
