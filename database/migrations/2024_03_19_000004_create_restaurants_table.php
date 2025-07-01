@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function up()
     {
         Schema::create('restaurants', function (Blueprint $table) {
@@ -28,6 +27,13 @@ return new class extends Migration
             $table->json('images')->nullable();
             $table->json('menu_images')->nullable();
             $table->float('rating')->default(5);
+
+            // Thông tin ngân hàng
+            $table->string('bank_code', 50)->nullable();
+            $table->string('bank_account_number', 50)->nullable();
+            $table->unsignedInteger('deposit_adult')->nullable();
+            $table->unsignedInteger('deposit_child')->nullable();
+            
             $table->timestamps();
         });
     }
@@ -36,4 +42,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('restaurants');
     }
-}; 
+};

@@ -24,6 +24,10 @@ class Restaurant extends Model
         'images',
         'menu_images',
         'rating',
+        'bank_code',
+        'bank_account_number',
+        'deposit_adult',
+        'deposit_child',
     ];
 
     protected $casts = [
@@ -32,6 +36,10 @@ class Restaurant extends Model
         'menu_images' => 'array',
         'rating' => 'float',
         'avatar' => 'array',
+        'bank_code' => 'string',
+        'bank_account_number' => 'string',
+        'deposit_adult' => 'integer',
+        'deposit_child' => 'integer',
     ];
 
     public function types(): BelongsToMany

@@ -40,4 +40,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/reservations/{id}/cancel', [ReservationController::class, 'cancel']);
     Route::post('/restaurants/{id}/reviews', action: [ReviewController::class, 'store']);
     Route::get('/reservations/history', [ReservationController::class, 'history']);
+    Route::get('/reservations/{id}/qr-code', [ReservationController::class, 'getQrCode']);
 }); 
