@@ -56,6 +56,19 @@ class RestaurantController extends Controller
             // ->where('status', 'active')
             ->findOrFail($id);
 
+        $restaurant->avatar = $restaurant->avatar ? Attachment::find($restaurant->avatar[0])->url() : null;
+        if ($restaurant->images) {
+            $restaurant->images = array_map(function ($image) {
+                return Attachment::find($image)->url();
+            }, $restaurant->images);
+        }
+
+        if ($restaurant->menu_images) {
+            $restaurant->menu_images = array_map(function ($image) {
+                return Attachment::find($image)->url();
+            }, $restaurant->menu_images);
+        }
+
         return response()->json([
             'status' => 'success',
             'data' => $restaurant
