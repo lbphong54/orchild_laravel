@@ -76,13 +76,29 @@ class RestaurantController extends Controller
     }
 
     public function related($id)
-    {
-        $restaurant = Restaurant::find($id);
-        if (!$restaurant) {
-            return response()->json(['data' => []]);
-        }
-        // Nếu không có trường type, chỉ lấy 4 nhà hàng khác bất kỳ
-        $related = Restaurant::where('id', '!=', $id)->inRandomOrder()->limit(4)->get();
-        return response()->json(['data' => $related]);
+{
+    $restaurant = Restaurant::find($id);
+    if (!$restaurant) {
+        return response()->json(['data' => []]);
     }
+
+    // Lấy 4 nhà hàng khác bất kỳ (có thể thêm điều kiện type nếu muốn)
+    $related = Restaurant::where('id', '!=', $id)->inRandomOrder()->limit(4)->get();
+
+    // Xử lý avatar thành đường dẫn ảnh
+    $related = $related->map(function ($item) {
+        // Nếu avatar là mảng, lấy phần tử đầu tiên
+        
+        $avatarUrl = null;
+        if ($item->avatar) {
+            $attachment = Attachment::find($item->avatar[0]);
+            $avatarUrl = $attachment ? $attachment->url() : null;
+        }
+
+        $item->avatar = $avatarUrl;
+        return $item;
+    });
+
+    return response()->json(['data' => $related]);
+}
 }

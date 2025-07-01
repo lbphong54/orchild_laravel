@@ -148,9 +148,9 @@ class UserEditScreen extends Screen
             ->toArray();
 
         $userData = $request->get('user');
-        if ($user->exists && (is_null($userData['password']) || empty($userData['password']))) {
+        if ($user->exists && (!isset($userData['password']) || empty($userData['password']))) {
             unset($userData['password']);
-        } else {
+        } elseif (isset($userData['password'])) {
             $userData['password'] = Hash::make($userData['password']);
         }
 
@@ -194,9 +194,10 @@ class UserEditScreen extends Screen
             'password' => 'required|confirmed|min:8',
         ]);
 
-        $user->password = Hash::make($request->get('password'));
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->input('password'));
+        }
         $user->save();
-
         Toast::info(__('User was saved.'));
     }
 }
