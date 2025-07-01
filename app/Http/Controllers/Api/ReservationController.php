@@ -132,6 +132,13 @@ class ReservationController extends Controller
 
         // Kiểm tra thời gian hủy
         $now = Carbon::now();
+        // $createdDiff = $now->diffInMinutes($reservation->created_at);
+        if ($createdDiff > 5) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Bạn chỉ có thể hủy đơn trong vòng 5 phút sau khi đặt.'
+            ], 403);
+        }
         $hoursBeforeReservation = $now->diffInHours($reservation->reservation_time, false);
         
         // Không cho phép hủy nếu đã quá thời gian đặt bàn
@@ -178,7 +185,8 @@ class ReservationController extends Controller
 
         $perPage = $request->input('limit', 10);
         $page = $request->input('page', 1);
-
+        $reservations = Reservation::where('customer_id', $user->id)->get();
+        
         $reservations = Reservation::with(['restaurant:id,name,address,phone', 'tables:id,name'])
             ->where('customer_id', $user->id)
             ->orderBy('reservation_time', 'desc')

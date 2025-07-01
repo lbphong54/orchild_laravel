@@ -12,8 +12,8 @@ class RestaurantController extends Controller
     public function index(Request $request)
     {
         $query = Restaurant::select('id', 'name', 'address', 'price_range', 'rating', 'avatar')
-            ->with(['types'])
-            ->where('status', 'active');
+            ->with(['types']);
+            // ->where('status', 'active');
 
         // Filter by type_id if provided
         if ($request->has('type_id')) {
