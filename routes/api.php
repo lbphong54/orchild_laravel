@@ -7,7 +7,7 @@ use App\Http\Controllers\Api\ReservationController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\RestaurantTypeController;
-
+use App\Http\Controllers\Api\TableController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -31,6 +31,7 @@ Route::get('/restaurants', [RestaurantController::class, 'index']);
 Route::get('/restaurants/{id}', [RestaurantController::class, 'show']);
 Route::get('/restaurants/{id}/reviews', [ReviewController::class, 'index']);
 Route::get('/restaurant-types', [RestaurantTypeController::class, 'index']);
+Route::get('/restaurants-table', [TableController::class, 'index']);
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
