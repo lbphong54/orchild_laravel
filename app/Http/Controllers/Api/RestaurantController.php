@@ -18,7 +18,15 @@ class RestaurantController extends Controller
         // Filter by type_id if provided
         if ($request->has('type_id')) {
             $query->whereHas('types', function ($q) use ($request) {
-                $q->where('types.id', $request->type_id);
+                $q->where('restaurant_types.id', $request->type_id);
+            });
+        }
+
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('address', 'like', "%{$search}%");
             });
         }
 

@@ -211,6 +211,7 @@ class ReservationController extends Controller
             'status' => 'success',
             'data' => [
                 'amount' => $amount,
+                'restaurant' => $reservation->restaurant->name,
                 'bank_code' => $reservation->restaurant->bank_code,
                 'bank_account_number' => $reservation->restaurant->bank_account_number
             ]
