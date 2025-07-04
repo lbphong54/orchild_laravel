@@ -18,6 +18,9 @@ return new class extends Migration
             $table->enum('status', ['pending', 'confirmed', 'cancelled', 'completed'])->default('pending');
             $table->string('special_request', 255)->nullable();
             $table->boolean('is_paid')->default(false);
+            $table->decimal('amount', 12, 0)->nullable(); // Số tiền đặt (decimal cho tiền tệ)
+            $table->boolean('confirm_paid')->nullable(); // Xác nhận đã thanh toán
+            $table->dateTime('cancelled_at')->nullable(); // Thời gian hủy
             $table->timestamps();
         });
     }
@@ -26,4 +29,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('reservations');
     }
-}; 
+};

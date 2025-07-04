@@ -19,10 +19,12 @@ class Reservation extends Model
         'status',
         'special_request',
         'is_paid',
+        'cancellled_at',
+        'amount',
+        'cofirm_paid',
     ];
 
     protected $casts = [
-        'reservation_date' => 'date',
         'reservation_time' => 'datetime',
     ];
 
