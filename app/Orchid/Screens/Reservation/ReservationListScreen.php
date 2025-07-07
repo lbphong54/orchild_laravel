@@ -21,6 +21,9 @@ use Orchid\Screen\Fields\DateTimer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+use Orchid\Alert\Toast;
+use Orchid\Support\Facades\Toast as FacadesToast;
 
 class ReservationListScreen extends Screen
 {
@@ -44,10 +47,10 @@ class ReservationListScreen extends Screen
     public function commandBar(): array
     {
         return [
-        ModalToggle::make('Tạo đơn mới')
-            ->modal('createReservation')
-            ->method('create')
-            ->icon('plus'),
+            ModalToggle::make('Tạo đơn mới')
+                ->modal('createReservation')
+                ->method('create')
+                ->icon('plus'),
         ];
     }
 
@@ -199,6 +202,13 @@ class ReservationListScreen extends Screen
         $reservation = Reservation::findOrFail($request->get('reservation'));
         $oldStatus = $reservation->status;
 
+        // Không cho phép cập nhật nếu đã hủy hoặc hoàn thành
+        if (in_array($oldStatus, ['cancelled', 'completed'])) {
+            // Có thể redirect kèm thông báo lỗi nếu muốn
+            FacadesToast::error('Không thể cập nhật đơn đã hủy hoặc đã hoàn thành.');
+            return redirect()->route('platform.reservation.list');
+        }
+
         $data = $request->input('reservation');
         $reservation->status = $data['status'];
         $reservation->reservation_time = $data['reservation_time'];
@@ -212,7 +222,7 @@ class ReservationListScreen extends Screen
         if ($oldStatus !== 'cancelled' && $data['status'] === 'cancelled') {
             $now = Carbon::now();
             $hoursBeforeReservation = $now->diffInHours($reservation->reservation_time, false);
-            
+
             // Chỉ gửi email nếu chưa quá thời gian đặt bàn
             if ($hoursBeforeReservation >= 0) {
                 SendReservationCancellationJob::dispatch($reservation, $now);

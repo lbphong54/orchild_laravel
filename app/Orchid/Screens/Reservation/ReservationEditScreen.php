@@ -92,7 +92,8 @@ class ReservationEditScreen extends Screen
                         'cancelled' => 'Đã hủy',
                         'completed' => 'Hoàn thành',
                     ])
-                    ->required(),
+                    ->required()
+                    ->disabled(in_array(optional($this->reservation)->status, ['completed', 'cancelled'])),
 
                 TextArea::make('reservation.notes')
                     ->title('Ghi chú')
@@ -115,4 +116,4 @@ class ReservationEditScreen extends Screen
 
         return redirect()->route('platform.reservation.list');
     }
-} 
+}

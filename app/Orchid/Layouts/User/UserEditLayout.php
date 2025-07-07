@@ -22,14 +22,14 @@ class UserEditLayout extends Rows
                 ->type('text')
                 ->max(255)
                 ->required()
-                ->title(__('Name'))
-                ->placeholder(__('Name')),
+                ->title('Tên')
+                ->placeholder('Tên'),
 
             Input::make('user.email')
                 ->type('email')
                 ->required()
-                ->title(__('Email'))
-                ->placeholder(__('Email')),
+                ->title('Email')
+                ->placeholder('Email'),
         ];
     }
 }

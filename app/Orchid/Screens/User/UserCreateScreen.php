@@ -15,11 +15,6 @@ use Orchid\Support\Facades\Toast;
 
 class UserCreateScreen extends Screen
 {
-    /**
-     * Fetch data to be displayed on the screen.
-     *
-     * @return array
-     */
     public function query(): iterable
     {
         return [
@@ -27,29 +22,16 @@ class UserCreateScreen extends Screen
         ];
     }
 
-    /**
-     * The name of the screen displayed in the header.
-     *
-     * @return string|null
-     */
     public function name(): ?string
     {
-        return 'Create User';
+        return 'Tạo người dùng';
     }
 
-    /**
-     * Display header description.
-     *
-     * @return string|null
-     */
     public function description(): ?string
     {
-        return 'Create a new user account';
+        return 'Tạo tài khoản người dùng mới';
     }
 
-    /**
-     * @return iterable|null
-     */
     public function permission(): ?iterable
     {
         return [
@@ -57,36 +39,23 @@ class UserCreateScreen extends Screen
         ];
     }
 
-    /**
-     * The screen's action buttons.
-     *
-     * @return Action[]
-     */
     public function commandBar(): iterable
     {
         return [];
     }
 
-    /**
-     * @return \Orchid\Screen\Layout[]
-     */
     public function layout(): iterable
     {
         return [
             Layout::block(UserCreateLayout::class)
                 ->commands(
-                    Button::make(__('Create'))
+                    Button::make('Tạo')
                         ->icon('check')
                         ->method('create')
                 ),
         ];
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function create(Request $request)
     {
         $request->validate([
@@ -96,6 +65,13 @@ class UserCreateScreen extends Screen
             ],
             'user.name' => 'required',
             'password' => 'required|confirmed|min:8',
+        ], [
+            'user.email.required' => 'Vui lòng nhập email.',
+            'user.email.unique' => 'Email đã tồn tại.',
+            'user.name.required' => 'Vui lòng nhập tên.',
+            'password.required' => 'Vui lòng nhập mật khẩu.',
+            'password.confirmed' => 'Mật khẩu xác nhận không khớp.',
+            'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự.',
         ]);
 
         $user = new User();
@@ -105,7 +81,7 @@ class UserCreateScreen extends Screen
 
         $user->replaceRoles($request->input('user.roles'));
 
-        Toast::info(__('User was created successfully.'));
+        Toast::info('Người dùng đã được tạo thành công.');
 
         return redirect()->route('platform.systems.users');
     }

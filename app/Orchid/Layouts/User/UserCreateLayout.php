@@ -23,30 +23,30 @@ class UserCreateLayout extends Rows
                 ->type('text')
                 ->max(255)
                 ->required()
-                ->title(__('Name'))
-                ->placeholder(__('Name')),
+                ->title('Tên')
+                ->placeholder('Tên'),
 
             Input::make('user.email')
                 ->type('email')
                 ->required()
-                ->title(__('Email'))
-                ->placeholder(__('Email')),
+                ->title('Email')
+                ->placeholder('Email'),
 
             Password::make('password')
                 ->required()
-                ->title(__('Password'))
-                ->placeholder(__('Enter your password')),
+                ->title('Mật khẩu')
+                ->placeholder('Nhập mật khẩu'),
 
             Password::make('password_confirmation')
                 ->required()
-                ->title(__('Confirm Password'))
-                ->placeholder(__('Confirm your password')),
+                ->title('Xác nhận mật khẩu')
+                ->placeholder('Xác nhận mật khẩu'),
 
             Select::make('user.roles.')
                 ->fromModel(Role::class, 'name')
                 ->multiple()
-                ->title(__('Roles'))
-                ->help(__('Select the role(s) for this user')),
+                ->title('Vai trò')
+                ->help('Chọn vai trò cho người dùng'),
         ];
     }
-} 
+}

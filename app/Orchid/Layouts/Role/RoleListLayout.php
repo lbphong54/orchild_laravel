@@ -24,25 +24,25 @@ class RoleListLayout extends Table
     public function columns(): array
     {
         return [
-            TD::make('name', __('Name'))
+            TD::make('name', 'Tên')
                 ->sort()
                 ->cantHide()
                 ->filter(Input::make())
                 ->render(fn (Role $role) => Link::make($role->name)
                     ->route('platform.systems.roles.edit', $role->id)),
 
-            TD::make('slug', __('Slug'))
+            TD::make('slug', 'Định danh')
                 ->sort()
                 ->cantHide()
                 ->filter(Input::make()),
 
-            TD::make('created_at', __('Created'))
+            TD::make('created_at', 'Ngày tạo')
                 ->usingComponent(DateTimeSplit::class)
                 ->align(TD::ALIGN_RIGHT)
                 ->defaultHidden()
                 ->sort(),
 
-            TD::make('updated_at', __('Last edit'))
+            TD::make('updated_at', 'Chỉnh sửa lần cuối')
                 ->usingComponent(DateTimeSplit::class)
                 ->align(TD::ALIGN_RIGHT)
                 ->sort(),

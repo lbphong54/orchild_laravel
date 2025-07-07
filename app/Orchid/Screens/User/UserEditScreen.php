@@ -48,7 +48,7 @@ class UserEditScreen extends Screen
      */
     public function name(): ?string
     {
-        return $this->user->exists ? 'Edit User' : 'Create User';
+        return $this->user->exists ? 'Chỉnh sửa người dùng' : 'Tạo người dùng';
     }
 
     /**
@@ -56,7 +56,7 @@ class UserEditScreen extends Screen
      */
     public function description(): ?string
     {
-        return 'User details and privileges';
+        return 'Chi tiết và quyền hạn của người dùng';
     }
 
     public function permission(): ?iterable
@@ -74,19 +74,19 @@ class UserEditScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Button::make(__('Impersonate user'))
+            Button::make('Đăng nhập với tư cách người dùng')
                 ->icon('login')
-                ->confirm(__('You can revert to your original state by logging out.'))
+                ->confirm('Bạn có thể quay lại trạng thái ban đầu bằng cách đăng xuất.')
                 ->method('loginAs')
                 ->canSee($this->user->exists && \request()->user()->id !== $this->user->id),
 
-            Button::make(__('Remove'))
+            Button::make('Xóa')
                 ->icon('trash')
-                ->confirm(__('Once the account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.'))
+                ->confirm('Khi tài khoản bị xóa, tất cả dữ liệu liên quan sẽ bị xóa vĩnh viễn. Vui lòng tải về các dữ liệu bạn muốn giữ lại trước khi xóa.')
                 ->method('remove')
                 ->canSee($this->user->exists),
 
-            Button::make(__('Save'))
+            Button::make('Lưu')
                 ->icon('check')
                 ->method('save'),
         ];
@@ -99,30 +99,30 @@ class UserEditScreen extends Screen
     {
         return [
             Layout::block(UserEditLayout::class)
-                ->title(__('Profile Information'))
-                ->description(__('Update your account\'s profile information and email address.'))
+                ->title('Thông tin cá nhân')
+                ->description('Cập nhật thông tin cá nhân và email.')
                 ->commands(
-                    Button::make(__('Save'))
+                    Button::make('Lưu')
                         ->type(Color::DEFAULT())
                         ->icon('check')
                         ->method('save')
                 ),
 
             Layout::block(UserPasswordLayout::class)
-                ->title(__('Update Password'))
-                ->description(__('Ensure your account is using a long, random password to stay secure.'))
+                ->title('Cập nhật mật khẩu')
+                ->description('Hãy sử dụng mật khẩu dài và ngẫu nhiên để bảo mật tài khoản.')
                 ->commands(
-                    Button::make(__('Update password'))
+                    Button::make('Cập nhật mật khẩu')
                         ->type(Color::DEFAULT())
                         ->icon('check')
                         ->method('changePassword')
                 ),
 
             Layout::block(UserRoleLayout::class)
-                ->title(__('Roles'))
-                ->description(__('A Role defines a set of tasks a user assigned the role is allowed to perform.'))
+                ->title('Vai trò')
+                ->description('Vai trò xác định các quyền mà người dùng được phép thực hiện.')
                 ->commands(
-                    Button::make(__('Save roles'))
+                    Button::make('Lưu vai trò')
                         ->type(Color::DEFAULT())
                         ->icon('check')
                         ->method('save')
@@ -163,7 +163,7 @@ class UserEditScreen extends Screen
 
         $user->save();
 
-        Toast::info(__('User was saved.'));
+        Toast::info('Đã lưu người dùng.');
 
         return redirect()->route('platform.systems.users');
     }
@@ -177,7 +177,7 @@ class UserEditScreen extends Screen
     {
         $user->delete();
 
-        Toast::info(__('User was removed'));
+        Toast::info('Đã xóa người dùng');
 
         return redirect()->route('platform.systems.users');
     }
@@ -198,6 +198,6 @@ class UserEditScreen extends Screen
             $user->password = Hash::make($request->input('password'));
         }
         $user->save();
-        Toast::info(__('User was saved.'));
+        Toast::info('Đã lưu người dùng.');
     }
 }

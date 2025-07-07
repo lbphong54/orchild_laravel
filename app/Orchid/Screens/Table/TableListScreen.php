@@ -118,7 +118,7 @@ class TableListScreen extends Screen
                     ->sort()
                     ->render(fn (RestaurantTable $table) => $table->created_at->format('d/m/Y H:i')),
 
-                TD::make(__('Thao tác'))
+                TD::make('Thao tác')
                     ->align(TD::ALIGN_CENTER)
                     ->width('120px')
                     ->render(fn (RestaurantTable $table) => view('platform.tables.actions', [
@@ -132,4 +132,4 @@ class TableListScreen extends Screen
     {
         return redirect()->route('platform.tables.create');
     }
-} 
+}

@@ -19,12 +19,12 @@ class UserPasswordLayout extends Rows
     {
         return [
             Password::make('password')
-                ->placeholder(__('Enter your password'))
-                ->title(__('Password')),
+                ->placeholder('Nhập mật khẩu')
+                ->title('Mật khẩu'),
 
             Password::make('password_confirmation')
-                ->placeholder(__('Confirm your password'))
-                ->title(__('Confirm Password')),
+                ->placeholder('Xác nhận mật khẩu')
+                ->title('Xác nhận mật khẩu'),
         ];
     }
 }

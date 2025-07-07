@@ -40,7 +40,7 @@ class UserListScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'User Management';
+        return 'Quản lý người dùng';
     }
 
     /**
@@ -48,7 +48,7 @@ class UserListScreen extends Screen
      */
     public function description(): ?string
     {
-        return 'A comprehensive list of all users in the system';
+        return 'Danh sách toàn bộ người dùng trong hệ thống';
     }
 
     public function permission(): ?iterable
@@ -66,7 +66,7 @@ class UserListScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            ModalToggle::make(__('Add new'))
+            ModalToggle::make('Thêm mới')
                 ->modal('createUserModal')
                 ->method('createUser')
                 ->icon('plus'),
@@ -88,8 +88,8 @@ class UserListScreen extends Screen
                 ->deferred('loadUserOnOpenModal'),
 
             Layout::modal('createUserModal', UserCreateLayout::class)
-                ->title(__('Create User'))
-                ->applyButton('Create User')
+                ->title('Tạo người dùng')
+                ->applyButton('Tạo người dùng')
         ];
     }
 
@@ -116,14 +116,14 @@ class UserListScreen extends Screen
 
         $user->fill($request->input('user'))->save();
 
-        Toast::info(__('User was saved.'));
+        Toast::info('Đã lưu người dùng.');
     }
 
     public function remove(User $user)
     {
         $user->delete();
 
-        Toast::info(__('User was removed'));
+        Toast::info('Đã xóa người dùng');
     }
 
     public function asyncCreateUser(): array
@@ -151,6 +151,6 @@ class UserListScreen extends Screen
         
         $user->roles()->sync($request->input('user.roles'));
 
-        Toast::info(__('User was created successfully.'));
+        Toast::info('Tạo người dùng thành công.');
     }
 }

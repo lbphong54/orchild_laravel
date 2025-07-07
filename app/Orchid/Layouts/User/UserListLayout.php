@@ -25,27 +25,27 @@ class UserListLayout extends Table
     public function columns(): array
     {
         return [
-            TD::make('name', __('Name'))
+            TD::make('name', 'Tên')
                 ->sort()
                 ->cantHide()
                 ->filter(Input::make())
                 ->render(fn(User $user) => Link::make($user->name)
                     ->route('platform.systems.users.edit', $user)),
 
-            TD::make('email', __('Email'))
+            TD::make('email', 'Email')
                 ->sort()
                 ->cantHide()
                 ->filter(Input::make()),
-            TD::make('roles', __('Role'))
+            TD::make('roles', 'Vai trò')
                 ->sort()
                 ->cantHide()
                 ->filter(Input::make())
                 ->render(fn(User $user) => $user->roles->pluck('name')->implode(', ')),
-            TD::make('created_at', __('Created'))
+            TD::make('created_at', 'Ngày tạo')
                 ->sort()
                 ->render(fn(User $user) => $user->created_at->toDateTimeString()),
 
-            TD::make('updated_at', __('Last edit'))
+            TD::make('updated_at', 'Chỉnh sửa lần cuối')
                 ->sort()
                 ->render(fn(User $user) => $user->updated_at->toDateTimeString()),
         ];

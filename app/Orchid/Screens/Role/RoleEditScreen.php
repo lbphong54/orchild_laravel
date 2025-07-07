@@ -40,7 +40,7 @@ class RoleEditScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Edit Role';
+        return 'Chỉnh sửa vai trò';
     }
 
     /**
@@ -48,7 +48,7 @@ class RoleEditScreen extends Screen
      */
     public function description(): ?string
     {
-        return 'Modify the privileges and permissions associated with a specific role.';
+        return 'Chỉnh sửa quyền và đặc quyền của vai trò.';
     }
 
     /**
@@ -69,11 +69,11 @@ class RoleEditScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Button::make(__('Save'))
+            Button::make('Lưu')
                 ->icon('bs.check-circle')
                 ->method('save'),
 
-            Button::make(__('Remove'))
+            Button::make('Xóa')
                 ->icon('bs.trash3')
                 ->method('remove')
                 ->canSee($this->role->exists),
@@ -91,14 +91,14 @@ class RoleEditScreen extends Screen
             Layout::block([
                 RoleEditLayout::class,
             ])
-                ->title('Role')
-                ->description('A role is a collection of privileges (of possibly different services like the Users service, Moderator, and so on) that grants users with that role the ability to perform certain tasks or operations.'),
+                ->title('Vai trò')
+                ->description('Vai trò là tập hợp các quyền cho phép người dùng thực hiện các thao tác nhất định.'),
 
             Layout::block([
                 RolePermissionLayout::class,
             ])
-                ->title('Permission/Privilege')
-                ->description('A privilege is necessary to perform certain tasks and operations in an area.'),
+                ->title('Quyền/Đặc quyền')
+                ->description('Đặc quyền là cần thiết để thực hiện các thao tác trong một khu vực.'),
         ];
     }
 
@@ -124,7 +124,7 @@ class RoleEditScreen extends Screen
 
         $role->save();
 
-        Toast::info(__('Role was saved'));
+        Toast::info('Đã lưu vai trò');
 
         return redirect()->route('platform.systems.roles');
     }
@@ -138,7 +138,7 @@ class RoleEditScreen extends Screen
     {
         $role->delete();
 
-        Toast::info(__('Role was removed'));
+        Toast::info('Đã xóa vai trò');
 
         return redirect()->route('platform.systems.roles');
     }

@@ -32,57 +32,66 @@ class PlatformProvider extends OrchidServiceProvider
     public function menu(): array
     {
         return [
-            Menu::make('Quản lý nhà hàng')
+            // Nhóm Quản lý Nhà hàng & Đặt bàn
+            Menu::make('Quản lý nhà hàng & đặt bàn')
                 ->icon('bs.building')
-                ->title('Nhà hàng')
+                ->title('Quản lý nhà hàng & đặt bàn')
                 ->list([
-                    Menu::make('Danh sách nhà hàng')
-                        ->icon('bs.list')
-                        ->route('platform.restaurant.list'),
-                    Menu::make('Thông tin nhà hàng')
-                        ->icon('bs.person')
-                        ->route('platform.restaurant.profile')
-                        // ->canSee(Auth::check() && Auth::user()->restaurant_id)
-                        ->permission('platform.restaurant.manage'),
-                    Menu::make('Loại nhà hàng')
-                        ->icon('bs.tags')
-                        ->route('platform.restaurant-type.list'),
-                    Menu::make('Tiện ích')
-                        ->icon('bs.stars')
-                        ->route('platform.amenity.list'),
-                ]),
+                    Menu::make('Nhà hàng')
+                        ->icon('bs.building')
+                        ->list([
+                            Menu::make('Danh sách nhà hàng')
+                                ->icon('bs.list')
+                                ->route('platform.restaurant.list'),
+                            Menu::make('Thông tin nhà hàng')
+                                ->icon('bs.person')
+                                ->route('platform.restaurant.profile')
+                                ->permission('platform.restaurant.manage'),
+                            Menu::make('Loại nhà hàng')
+                                ->icon('bs.tags')
+                                ->route('platform.restaurant-type.list'),
+                            Menu::make('Tiện ích')
+                                ->icon('bs.stars')
+                                ->route('platform.amenity.list'),
+                        ]),
+                    Menu::make('Đặt bàn')
+                        ->icon('bs.calendar')
+                        ->list([
+                            Menu::make('Bàn')
+                                ->icon('bs.table')
+                                ->route('platform.tables'),
+                            Menu::make('Danh sách đặt bàn')
+                                ->icon('bs.list')
+                                ->route('platform.reservation.list'),
+                        ]),
+                ])
+                ->divider(),
 
-            Menu::make('Quản lý đặt bàn')
-                ->icon('bs.calendar')
-                ->title('Đặt bàn')
-                ->list([
-                    Menu::make('Bàn')
-                        ->icon('bs.table')
-                        ->route('platform.tables'),
-                    Menu::make('Danh sách đặt bàn')
-                        ->icon('bs.list')
-                        ->route('platform.reservation.list'),
-                ]),
-
-            Menu::make('Danh sách khách hàng')
+            // Nhóm Khách hàng & Đánh giá
+            Menu::make('Khách hàng')
                 ->icon('bs.people')
-                ->title('Khách hàng')
-                ->route('platform.customer.list'),
-
-
-            Menu::make('Quản lý đánh giá')
-                ->icon('bs.star')
-                ->title('Đánh giá')
+                ->title('Khách hàng & đánh giá')
                 ->list([
-                    Menu::make('Danh sách đánh giá')
-                        ->icon('bs.list')
-                        ->route('platform.review.list'),
-                ]),
+                    Menu::make('Danh sách khách hàng')
+                        ->icon('bs.people')
+                        ->route('platform.customer.list'),
+                    Menu::make('Đánh giá')
+                        ->icon('bs.star')
+                        ->list([
+                            Menu::make('Danh sách đánh giá')
+                                ->icon('bs.list')
+                                ->route('platform.review.list'),
+                        ]),
+                ])
+                ->divider(),
 
+            // Thống kê
             Menu::make('Thống kê')
                 ->icon('bs.bar-chart')
-                ->route('platform.stats'),
+                ->route('platform.stats')
+                ->divider(),
 
+            // Access Controls
             Menu::make(__('Users'))
                 ->icon('bs.people')
                 ->route('platform.systems.users')

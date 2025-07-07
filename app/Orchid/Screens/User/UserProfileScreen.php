@@ -38,7 +38,7 @@ class UserProfileScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'My Account';
+        return 'Tài khoản của tôi';
     }
 
     /**
@@ -46,7 +46,7 @@ class UserProfileScreen extends Screen
      */
     public function description(): ?string
     {
-        return 'Update your account details such as name, email address and password';
+        return 'Cập nhật thông tin tài khoản như tên, địa chỉ email và mật khẩu';
     }
 
     /**
@@ -57,13 +57,13 @@ class UserProfileScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Button::make('Back to my account')
+            Button::make('Quay lại tài khoản của tôi')
                 ->novalidate()
                 ->canSee(Impersonation::isSwitch())
                 ->icon('bs.people')
                 ->route('platform.switch.logout'),
 
-            Button::make('Sign out')
+            Button::make('Đăng xuất')
                 ->novalidate()
                 ->icon('bs.box-arrow-left')
                 ->route('platform.logout'),
@@ -77,20 +77,20 @@ class UserProfileScreen extends Screen
     {
         return [
             Layout::block(UserEditLayout::class)
-                ->title(__('Profile Information'))
-                ->description(__("Update your account's profile information and email address."))
+                ->title('Thông tin cá nhân')
+                ->description('Cập nhật thông tin cá nhân và địa chỉ email của bạn.')
                 ->commands(
-                    Button::make(__('Save'))
+                    Button::make('Lưu')
                         ->type(Color::BASIC())
                         ->icon('bs.check-circle')
                         ->method('save')
                 ),
 
             Layout::block(ProfilePasswordLayout::class)
-                ->title(__('Update Password'))
-                ->description(__('Ensure your account is using a long, random password to stay secure.'))
+                ->title('Cập nhật mật khẩu')
+                ->description('Hãy đảm bảo tài khoản của bạn sử dụng mật khẩu dài và ngẫu nhiên để bảo mật.')
                 ->commands(
-                    Button::make(__('Update password'))
+                    Button::make('Cập nhật mật khẩu')
                         ->type(Color::BASIC())
                         ->icon('bs.check-circle')
                         ->method('changePassword')
@@ -112,7 +112,7 @@ class UserProfileScreen extends Screen
             ->fill($request->get('user'))
             ->save();
 
-        Toast::info(__('Profile updated.'));
+        Toast::info('Đã cập nhật thông tin cá nhân.');
     }
 
     public function changePassword(Request $request): void
@@ -127,6 +127,6 @@ class UserProfileScreen extends Screen
             $user->password = Hash::make($request->get('password'));
         })->save();
 
-        Toast::info(__('Password changed.'));
+        Toast::info('Đã thay đổi mật khẩu.');
     }
 }

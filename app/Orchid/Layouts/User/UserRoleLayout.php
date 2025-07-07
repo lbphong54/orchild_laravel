@@ -21,8 +21,8 @@ class UserRoleLayout extends Rows
         return [
             Select::make('user.roles.')
                 ->fromModel(Role::class, 'name')
-                ->title(__('Name role'))
-                ->help(__('Select the role(s) for this user')),
+                ->title('Tên vai trò')
+                ->help('Chọn vai trò cho người dùng'),
         ];
     }
 }

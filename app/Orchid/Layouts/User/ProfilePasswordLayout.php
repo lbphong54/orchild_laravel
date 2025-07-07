@@ -19,18 +19,18 @@ class ProfilePasswordLayout extends Rows
     {
         return [
             Password::make('old_password')
-                ->placeholder(__('Enter the current password'))
-                ->title(__('Current password'))
-                ->help('This is your password set at the moment.'),
+            ->placeholder('Nhập mật khẩu hiện tại')
+            ->title('Mật khẩu hiện tại')
+            ->help('Đây là mật khẩu bạn đang sử dụng.'),
 
             Password::make('password')
-                ->placeholder(__('Enter the password to be set'))
-                ->title(__('New password')),
+            ->placeholder('Nhập mật khẩu mới')
+            ->title('Mật khẩu mới'),
 
             Password::make('password_confirmation')
-                ->placeholder(__('Enter the password to be set'))
-                ->title(__('Confirm new password'))
-                ->help('A good password is at least 15 characters or at least 8 characters long, including a number and a lowercase letter.'),
+            ->placeholder('Nhập lại mật khẩu mới')
+            ->title('Xác nhận mật khẩu mới')
+            ->help('Mật khẩu mạnh nên có ít nhất 15 ký tự hoặc ít nhất 8 ký tự bao gồm số và chữ thường.'),
         ];
     }
 }
