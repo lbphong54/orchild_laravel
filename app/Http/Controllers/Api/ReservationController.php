@@ -133,7 +133,7 @@ class ReservationController extends Controller
         // Kiểm tra thời gian hủy
         $now = Carbon::now();
         $hoursBeforeReservation = $now->diffInHours($reservation->reservation_time, false);
-        
+
         // Không cho phép hủy nếu đã quá thời gian đặt bàn
         if ($hoursBeforeReservation < 0) {
             return response()->json([
@@ -152,7 +152,7 @@ class ReservationController extends Controller
         // Xóa các bàn đã đặt
         $reservation->tables()->detach();
 
-        $refundMessage = $hoursBeforeReservation >= 1 
+        $refundMessage = $hoursBeforeReservation >= 1
             ? 'Đơn hàng sẽ được hoàn tiền trong vòng 3-5 ngày làm việc.'
             : 'Do hủy đơn trong vòng 1 giờ trước thời gian đặt bàn, đơn hàng không được hoàn tiền.';
 
@@ -171,6 +171,7 @@ class ReservationController extends Controller
 
     /**
      * Lấy lịch sử đặt bàn của user đăng nhập, có phân trang.
+     * Thêm thông tin tổng số bàn đã đặt, số bàn thành công, số bàn thất bại.
      */
     public function history(Request $request)
     {
@@ -184,9 +185,25 @@ class ReservationController extends Controller
             ->orderBy('reservation_time', 'desc')
             ->paginate($perPage, ['*'], 'page', $page);
 
+        // Thống kê tổng số bàn đã đặt, số bàn thành công, số bàn thất bại
+        $totalReservations = Reservation::where('customer_id', $user->id)->count();
+        $successReservations = Reservation::where('customer_id', $user->id)
+            ->where('status', 'completed')->count();
+        $failedReservations = Reservation::where('customer_id', $user->id)
+            ->where('status', 'cancelled')->count();
+
+        $waitingReservations = Reservation::where('customer_id', $user->id)
+            ->where('status', 'pending')->count();
+
         return response()->json([
             'status' => 'success',
-            'data' => $reservations
+            'data' => $reservations,
+            'summary' => [
+                'total' => $totalReservations,
+                'success' => $successReservations,
+                'failed' => $failedReservations,
+                'waiting' => $waitingReservations
+            ]
         ]);
     }
 
