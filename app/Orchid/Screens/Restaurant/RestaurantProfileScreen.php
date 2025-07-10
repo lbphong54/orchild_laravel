@@ -38,7 +38,7 @@ class RestaurantProfileScreen extends Screen
 
     public function query(): array
     {
-        $restaurant = Restaurant::with('types', 'amenities')->where('user_id', Auth::user()->id)->first();
+        $restaurant = Restaurant::with('types', 'restaurant_amenities')->where('user_id', Auth::user()->id)->first();
 
         return [
             'restaurant' => $restaurant,
@@ -305,7 +305,7 @@ class RestaurantProfileScreen extends Screen
         }
 
         if ($request->has('restaurant.amenities')) {
-            $restaurant->amenities()->sync($request->get('restaurant.amenities'));
+            $restaurant->restaurant_amenities()->sync($request->get('restaurant.amenities'));
         }
 
         Toast::success('Thông tin nhà hàng đã được tạo thành công.');
@@ -344,7 +344,7 @@ class RestaurantProfileScreen extends Screen
         }
 
         if ($request->has('restaurant.amenities')) {
-            $restaurant->amenities()->sync($request->input('restaurant.amenities'));
+            $restaurant->restaurant_amenities()->sync($request->input('restaurant.amenities'));
         }
 
         Toast::success('Thông tin nhà hàng đã được cập nhật thành công.');

@@ -2,13 +2,11 @@
 
 namespace App\Orchid\Screens\Table;
 
+use App\Models\Restaurant;
 use App\Models\RestaurantTable;
 use Orchid\Screen\Screen;
-use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\Button;
-use Orchid\Support\Facades\Layout;
 use Illuminate\Support\Facades\Auth;
-use App\Orchid\Layouts\Table\TableStatsLayout;
 use App\Orchid\Layouts\Table\TableGridViewLayout;
 
 class TableGridViewScreen extends Screen
@@ -25,10 +23,16 @@ class TableGridViewScreen extends Screen
 
     public function query(): array
     {
+        $restauranId = Restaurant::query()->where('user_id', Auth::user()->id)->first()->id;
+        if ($restauranId) {
+            return [
+                'tables' => RestaurantTable::where('restaurant_id', $restauranId)
+                    ->orderBy('name')
+                    ->get()
+            ];
+        }
         return [
-            'tables' => RestaurantTable::where('restaurant_id', Auth::user()->restaurant_id)
-                ->orderBy('name')
-                ->get()
+            'tables' => []
         ];
     }
 
@@ -45,7 +49,6 @@ class TableGridViewScreen extends Screen
     public function layout(): array
     {
         return [
-            new TableStatsLayout(),
             new TableGridViewLayout(),
         ];
     }
@@ -54,4 +57,4 @@ class TableGridViewScreen extends Screen
     {
         return redirect()->route('platform.tables.create');
     }
-} 
+}

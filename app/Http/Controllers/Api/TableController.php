@@ -23,22 +23,34 @@ class TableController extends Controller
 
         if ($request->time) {
             $time = new Carbon($request->time);
-            $talbeReservation = ReservationTable::where('from_time', '<=', $time)
+
+            $talbeReservation = ReservationTable::query()
+                ->where('from_time', '<=', $time)
                 ->where('to_time', '>=', $time)
                 ->whereHas('table', function ($query) use ($request) {
                     $query->where('restaurant_id', $request->id);
                 })
                 ->whereDoesntHave('reservation', function ($query) {
-                    $query->where('status', '!=', 'cancelled');
-                    $query->where('status', '!=', 'completed');
+                    $query->whereNotIn('status', ['pending', 'confirmed']);
                 })
                 ->get();
+            $tableIds = $talbeReservation->pluck('restaurant_table_id')->toArray();
 
-            $table = RestaurantTable::where('restaurant_id', $request->id)
-                ->whereNotIn('id', $talbeReservation->pluck('restaurant_table_id'))
+            $tables = RestaurantTable::where('restaurant_id', $request->id)
                 ->get();
 
-            return response()->json($table);
+            $result = collect();
+
+            foreach ($tables as $table) {
+                if (in_array($table->id, $tableIds)) {
+                    $table['disable'] = true;
+                } else {
+                    $table['disable'] = false;
+                }
+                $result->push($table);
+            }
+
+            return response()->json($result);
         }
         $table = RestaurantTable::where('restaurant_id', $request->id)->get();
         return response()->json($table);

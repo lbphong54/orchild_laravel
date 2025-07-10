@@ -66,7 +66,7 @@ class CustomerEditScreen extends Screen
             Button::make('Xóa')
                 ->icon('trash')
                 ->method('remove')
-                ->canSee($this->customer->exists),
+                ->canSee($this->customer->exists && !$this->customer->reservations()->exists()),
         ];
     }
 

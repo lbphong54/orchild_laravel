@@ -47,10 +47,9 @@ class Restaurant extends Model
         return $this->belongsToMany(RestaurantType::class, 'restaurant_restaurant_type');
     }
 
-    public function amenities(): BelongsToMany
+    public function restaurant_amenities(): BelongsToMany
     {
-        return $this->belongsToMany(Amenity::class, 'restaurant_amenities')
-            ->withPivot('value');
+        return $this->belongsToMany(Amenity::class, 'restaurant_amenities');
     }
 
     public function restaurantTables(): HasMany

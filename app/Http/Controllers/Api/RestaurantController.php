@@ -58,7 +58,7 @@ class RestaurantController extends Controller
     {
         $restaurant = Restaurant::with([
             'types',
-            'amenities',
+            'restaurant_amenities',
             'restaurantTables:id,restaurant_id,name,min_capacity,max_capacity'
         ])
             // ->where('status', 'active')

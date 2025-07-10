@@ -2,7 +2,9 @@
 
 namespace App\Orchid\Screens\Review;
 
+use App\Models\Restaurant;
 use App\Models\Review;
+use Illuminate\Support\Facades\Auth;
 use Orchid\Screen\Screen;
 use Orchid\Screen\Actions\Link;
 use Orchid\Support\Facades\Layout;
@@ -18,11 +20,27 @@ class ReviewListScreen extends Screen
 
     public function query(): array
     {
-        return [
-            'reviews' => Review::with(['restaurant', 'customer'])
-                ->orderBy('id', 'desc')
-                ->paginate()
-        ];
+        if (Auth::user()->roles[0]->slug == 'admin') {
+            return [
+                'reviews' => Review::with(['restaurant', 'customer'])
+                    ->orderBy('id', 'desc')
+                    ->paginate()
+            ];
+        } else {
+            $restauranId = Restaurant::query()->where('user_id', Auth::user()->id)->first()->id;
+            if ($restauranId) {
+                return [
+                    'reviews' => Review::with(['restaurant', 'customer'])
+                        ->where('restaurant_id', $restauranId)
+                        ->orderBy('id', 'desc')
+                        ->paginate()
+                ];
+            }
+            return [
+                'reviews' => []
+            ];
+        }
+        
     }
 
     public function layout(): array

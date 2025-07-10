@@ -33,76 +33,60 @@ class PlatformProvider extends OrchidServiceProvider
     {
         return [
             // Nhóm Quản lý Nhà hàng & Đặt bàn
-            Menu::make('Quản lý nhà hàng & đặt bàn')
-                ->icon('bs.building')
-                ->title('Quản lý nhà hàng & đặt bàn')
-                ->list([
-                    Menu::make('Nhà hàng')
-                        ->icon('bs.building')
-                        ->list([
-                            Menu::make('Danh sách nhà hàng')
-                                ->icon('bs.list')
-                                ->route('platform.restaurant.list'),
-                            Menu::make('Thông tin nhà hàng')
-                                ->icon('bs.person')
-                                ->route('platform.restaurant.profile')
-                                ->permission('platform.restaurant.manage'),
-                            Menu::make('Loại nhà hàng')
-                                ->icon('bs.tags')
-                                ->route('platform.restaurant-type.list'),
-                            Menu::make('Tiện ích')
-                                ->icon('bs.stars')
-                                ->route('platform.amenity.list'),
-                        ]),
-                    Menu::make('Đặt bàn')
-                        ->icon('bs.calendar')
-                        ->list([
-                            Menu::make('Bàn')
-                                ->icon('bs.table')
-                                ->route('platform.tables'),
-                            Menu::make('Danh sách đặt bàn')
-                                ->icon('bs.list')
-                                ->route('platform.reservation.list'),
-                        ]),
-                ])
-                ->divider(),
 
-            // Nhóm Khách hàng & Đánh giá
-            Menu::make('Khách hàng')
-                ->icon('bs.people')
-                ->title('Khách hàng & đánh giá')
+            Menu::make('Nhà hàng')
+                ->icon('bs.building')
                 ->list([
-                    Menu::make('Danh sách khách hàng')
-                        ->icon('bs.people')
-                        ->route('platform.customer.list'),
-                    Menu::make('Đánh giá')
-                        ->icon('bs.star')
-                        ->list([
-                            Menu::make('Danh sách đánh giá')
-                                ->icon('bs.list')
-                                ->route('platform.review.list'),
-                        ]),
-                ])
-                ->divider(),
+                    Menu::make('Danh sách nhà hàng')
+                        ->icon('bs.list')
+                        ->route('platform.restaurant.list')
+                        ->permission('platform.restaurant.manage'),
+                    Menu::make('Loại nhà hàng')
+                        ->icon('bs.tags')
+                        ->route('platform.restaurant-type.list')
+                        ->permission('platform.restaurant-type.manage'),
+                    Menu::make('Tiện ích')
+                        ->icon('bs.stars')
+                        ->route('platform.amenity.list')
+                        ->permission('platform.amenity.manage'),
+                ]),
+            Menu::make('Thông tin nhà hàng')
+                ->icon('bs.person')
+                ->route('platform.restaurant.profile')
+                ->permission('platform.restaurant.profile'),
+
+            Menu::make('Bàn')
+                ->icon('bs.table')
+                ->route('platform.tables')
+                ->permission('platform.tables.manage'),
+            Menu::make('Danh sách đặt bàn')
+                ->icon('bs.list')
+                ->route('platform.reservation.list')
+                ->permission('platform.reservation.manage'),
+            // Nhóm Khách hàng & Đánh giá
+
+            Menu::make('Danh sách khách hàng')
+                ->icon('bs.people')
+                ->route('platform.customer.list')
+                ->permission('platform.customer.manage'),
+            Menu::make('Danh sách đánh giá')
+                ->icon('bs.list')
+                ->route('platform.review.list'),
+
 
             // Thống kê
             Menu::make('Thống kê')
                 ->icon('bs.bar-chart')
                 ->route('platform.stats')
+                ->permission('platform.stats')
                 ->divider(),
 
             // Access Controls
-            Menu::make(__('Users'))
+            Menu::make(__('Tài khoản quản trị'))
                 ->icon('bs.people')
                 ->route('platform.systems.users')
                 ->permission('platform.systems.users')
-                ->title(__('Access Controls')),
-
-            Menu::make(__('Roles'))
-                ->icon('bs.shield')
-                ->route('platform.systems.roles')
-                ->permission('platform.systems.roles')
-                ->divider(),
+                ->title(__('Tài khoản quản trị')),
         ];
     }
 
@@ -115,7 +99,6 @@ class PlatformProvider extends OrchidServiceProvider
     {
         return [
             ItemPermission::group(__('System'))
-                ->addPermission('platform.systems.roles', __('Roles'))
                 ->addPermission('platform.systems.users', __('Users')),
             ItemPermission::group(__('Restaurant'))
                 ->addPermission('platform.restaurant.manage', __('Manage Restaurants'))

@@ -58,7 +58,7 @@ class RestaurantListScreen extends Screen
                 TD::make('status', 'Trạng thái')
                     ->sort()
                     ->filter()
-                    ->render(fn (Restaurant $restaurant) => $restaurant->status ? 'Hoạt động' : 'Không hoạt động'),
+                    ->render(fn (Restaurant $restaurant) => $restaurant->status == 'active' ? 'Hoạt động' : 'Không hoạt động'),
                 TD::make('created_at', 'Ngày tạo')
                     ->sort()
                     ->render(fn (Restaurant $restaurant) => $restaurant->created_at->format('d/m/Y H:i')),
