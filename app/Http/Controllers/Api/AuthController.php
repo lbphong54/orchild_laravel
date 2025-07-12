@@ -178,4 +178,50 @@ class AuthController extends Controller
             'message' => 'OTP resent to your email.'
         ], 200);
     }
+
+    public function sendResetOtp(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Email không hợp lệ hoặc không tồn tại.'], 422);
+        }
+
+        $email = $request->input('email');
+        $otp = rand(100000, 999999); // 6 số
+        $redisKey = 'forgot_password:' . $email;
+        // Lưu OTP vào Redis trong 5 phút
+        \Illuminate\Support\Facades\Cache::put($redisKey, $otp, now()->addMinutes(5));
+
+        Mail::to($request->email)->send(new OtpMail($otp));
+
+        return response()->json(['message' => 'Đã gửi OTP đặt lại mật khẩu.']);
+    }
+
+    public function resendResetOtp(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Email không hợp lệ hoặc không tồn tại.'], 422);
+        }
+
+        $email = $request->input('email');
+        $redisKey = 'forgot_password:' . $email;
+
+        // Kiểm tra xem đã có yêu cầu quên mật khẩu chưa
+        if (!\Illuminate\Support\Facades\Cache::has($redisKey)) {
+            return response()->json(['message' => 'Không tìm thấy yêu cầu đặt lại mật khẩu hoặc OTP đã hết hạn.'], 400);
+        }
+
+        $otp = rand(100000, 999999);
+        \Illuminate\Support\Facades\Cache::put($redisKey, $otp, now()->addMinutes(5));
+        Mail::to($request->email)->send(new OtpMail($otp));
+
+        return response()->json(['message' => 'OTP đặt lại mật khẩu đã được gửi lại.']);
+    }
 } 

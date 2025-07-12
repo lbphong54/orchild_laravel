@@ -60,21 +60,21 @@ class RestaurantProfileScreen extends Screen
     {
         // Lấy danh sách ngân hàng từ API VietQR
         $banks = [];
-        try {
-            $response = @file_get_contents('https://api.vietqr.io/v2/banks');
-            if ($response !== false) {
-                $json = json_decode($response, true);
-                if (isset($json['data']) && is_array($json['data'])) {
-                    foreach ($json['data'] as $bank) {
-                        if (isset($bank['name']) && isset($bank['bin'])) {
-                            $banks[$bank['bin']] = $bank['name'] . ' (' . $bank['bin'] . ')';
-                        }
-                    }
-                }
-            }
-        } catch (\Exception $e) {
-            $banks = [];
-        }
+        // try {
+        //     $response = @file_get_contents('https://api.vietqr.io/v2/banks');
+        //     if ($response !== false) {
+        //         $json = json_decode($response, true);
+        //         if (isset($json['data']) && is_array($json['data'])) {
+        //             foreach ($json['data'] as $bank) {
+        //                 if (isset($bank['name']) && isset($bank['bin'])) {
+        //                     $banks[$bank['bin']] = $bank['name'] . ' (' . $bank['bin'] . ')';
+        //                 }
+        //             }
+        //         }
+        //     }
+        // } catch (\Exception $e) {
+        //     $banks = [];
+        // }
         return [
             Layout::rows([
                 Input::make('restaurant.name')
@@ -240,31 +240,31 @@ class RestaurantProfileScreen extends Screen
                 //     ->placeholder('Nhập thông tin')
                 //     ->required(),
 
-                Group::make([
-                    Select::make('restaurant.bank_code')
-                        ->title('Ngân hàng')
-                        ->options($banks)
-                        ->empty('Chọn ngân hàng')
-                        ->required(),
-                    Input::make('restaurant.bank_account_number')
-                        ->title('Số tài khoản ngân hàng')
-                        ->placeholder('Nhập số tài khoản')
-                        ->type('text')
-                        ->maxlength(50)
-                ]),
+                // Group::make([
+                //     Select::make('restaurant.bank_code')
+                //         ->title('Ngân hàng')
+                //         ->options($banks)
+                //         ->empty('Chọn ngân hàng')
+                //         ->required(),
+                //     Input::make('restaurant.bank_account_number')
+                //         ->title('Số tài khoản ngân hàng')
+                //         ->placeholder('Nhập số tài khoản')
+                //         ->type('text')
+                //         ->maxlength(50)
+                // ]),
 
-                Group::make([
-                    Input::make('restaurant.deposit_adult')
-                        ->title('Tiền cọc/người lớn (VND)')
-                        ->type('number')
-                        ->min(0)
-                        ->required(),
-                    Input::make('restaurant.deposit_child')
-                        ->title('Tiền cọc/trẻ em (VND)')
-                        ->type('number')
-                        ->min(0)
-                        ->required(),
-                ]),
+                // Group::make([
+                //     Input::make('restaurant.deposit_adult')
+                //         ->title('Tiền cọc/người lớn (VND)')
+                //         ->type('number')
+                //         ->min(0)
+                //         ->required(),
+                //     Input::make('restaurant.deposit_child')
+                //         ->title('Tiền cọc/trẻ em (VND)')
+                //         ->type('number')
+                //         ->min(0)
+                //         ->required(),
+                // ]),
             ])
         ];
     }
@@ -283,10 +283,10 @@ class RestaurantProfileScreen extends Screen
             'restaurant.parking_info' => 'nullable|string|max:255',
             'restaurant.opening_hours' => 'nullable|array',
             'restaurant.status' => 'nullable|in:active,inactive',
-            'restaurant.bank_code' => 'required|string|max:50',
-            'restaurant.bank_account_number' => 'required|string|max:50',
-            'restaurant.deposit_adult' => 'required|integer|min:0',
-            'restaurant.deposit_child' => 'required|integer|min:0',
+            // 'restaurant.bank_code' => 'required|string|max:50',
+            // 'restaurant.bank_account_number' => 'required|string|max:50',
+            // 'restaurant.deposit_adult' => 'required|integer|min:0',
+            // 'restaurant.deposit_child' => 'required|integer|min:0',
         ]);
 
         $restaurantData = $request->get('restaurant');
@@ -329,10 +329,10 @@ class RestaurantProfileScreen extends Screen
             'restaurant.status' => 'nullable|in:active,inactive',
             'restaurant.images' => 'nullable|array',
             'restaurant.menu_images' => 'nullable|array',
-            'restaurant.bank_code' => 'required|string|max:50',
-            'restaurant.bank_account_number' => 'required|string|max:50',
-            'restaurant.deposit_adult' => 'required|integer|min:0',
-            'restaurant.deposit_child' => 'required|integer|min:0',
+            // 'restaurant.bank_code' => 'required|string|max:50',
+            // 'restaurant.bank_account_number' => 'required|string|max:50',
+            // 'restaurant.deposit_adult' => 'required|integer|min:0',
+            // 'restaurant.deposit_child' => 'required|integer|min:0',
         ]);
 
         $restaurantData = $request->get('restaurant');

@@ -27,7 +27,7 @@ class ReviewListScreen extends Screen
                     ->paginate()
             ];
         } else {
-            $restauranId = Restaurant::query()->where('user_id', Auth::user()->id)->first()->id;
+            $restauranId = Restaurant::query()->where('user_id', Auth::user()->id)->first()?->id;
             if ($restauranId) {
                 return [
                     'reviews' => Review::with(['restaurant', 'customer'])

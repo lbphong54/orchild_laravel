@@ -12,57 +12,57 @@ class AdminUserSeeder extends Seeder
     public function run(): void
     {
         // Tạo role admin nếu chưa tồn tại
-        $adminRole =
+        // $adminRole =
             Role::insert([
+                // [
+                //     'name' => 'Administrator',
+                //     'slug' => 'admin',
+                //     'permissions' => [
+                //         'platform.index' => true,
+                //         'platform.systems.roles' => true,
+                //         'platform.systems.users' => true,
+                //         'platform.systems.attachment' => true,
+                //         'platform.systems.settings' => true,
+                //         'platform.review.manage' => true,
+                //         'platform.restaurant.manage' => true,
+                //         'platform.restaurant-type.manage' => true,
+                //         'platform.stats' => true,
+                //     ],
+                // ],
                 [
-                    'name' => 'Administrator',
-                    'slug' => 'admin',
-                    'permissions' => [
-                        'platform.index' => true,
-                        'platform.systems.roles' => true,
-                        'platform.systems.users' => true,
-                        'platform.systems.attachment' => true,
-                        'platform.systems.settings' => true,
-                        'platform.review.manage' => true,
-                        'platform.restaurant.manage' => true,
-                        'platform.restaurant-type.manage' => true,
-                        'platform.stats' => true,
-                    ],
-                ],
-                [
-                    'name' => 'AdminRestaurant',
+                    'name' => 'Admin Restaurant',
                     'slug' => 'admin-restaurant',
-                    'permissions' => [
+                    'permissions' => ([
                         'platform.index' => true,
                         'platform.restaurant.profile' => true,
                         'platform.review.manage' => true,
                         'platform.tables.manage' => true,
-                    ],
+                    ]),
                 ],
             ]);
 
         // Tạo user admin
-        $admin = User::firstOrCreate([
-            'email' => 'admin@admin.com',
-        ], [
-            'name' => 'Administrator',
-            'password' => Hash::make('password'),
-            'permissions' => [
-                'platform.index' => true,
-                'platform.systems.roles' => true,
-                'platform.systems.users' => true,
-                'platform.systems.attachment' => true,
-                'platform.systems.settings' => true,
-                'platform.products' => true,
-                'platform.categories' => true,
-                'platform.types' => true,
-                'platform.colors' => true,
-                'platform.sizes' => true,
-                'platform.partners' => true,
-            ],
-        ]);
+        // $admin = User::firstOrCreate([
+        //     'email' => 'admin@admin.com',
+        // ], [
+        //     'name' => 'Administrator',
+        //     'password' => Hash::make('password'),
+        //     'permissions' => [
+        //         'platform.index' => true,
+        //         'platform.systems.roles' => true,
+        //         'platform.systems.users' => true,
+        //         'platform.systems.attachment' => true,
+        //         'platform.systems.settings' => true,
+        //         'platform.products' => true,
+        //         'platform.categories' => true,
+        //         'platform.types' => true,
+        //         'platform.colors' => true,
+        //         'platform.sizes' => true,
+        //         'platform.partners' => true,
+        //     ],
+        // ]);
 
-        // Gán role admin cho user
-        $admin->addRole($adminRole);
+        // // Gán role admin cho user
+        // $admin->addRole($adminRole);
     }
 }

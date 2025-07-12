@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\RestaurantTypeController;
 use App\Http\Controllers\Api\TableController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -24,6 +25,8 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
 Route::post('/resend-otp', [AuthController::class, 'resendOtp']);
+Route::post('/forgot-password', [AuthController::class, 'sendResetOtp']);
+Route::post('/resend-forgot-otp', [AuthController::class, 'resendResetOtp']);
 Route::get('/restaurants/{id}/related', [RestaurantController::class, 'related']);
 
 // Restaurant routes
@@ -42,4 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/restaurants/{id}/reviews', action: [ReviewController::class, 'store']);
     Route::get('/reservations/history', [ReservationController::class, 'history']);
     Route::get('/reservations/{id}/qr-code', [ReservationController::class, 'getQrCode']);
-}); 
+});
+
+// Password reset routes
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
