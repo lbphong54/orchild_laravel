@@ -36,6 +36,7 @@ class PlatformProvider extends OrchidServiceProvider
 
             Menu::make('Nhà hàng')
                 ->icon('bs.building')
+                ->permission('platform.restaurant.manage')
                 ->list([
                     Menu::make('Danh sách nhà hàng')
                         ->icon('bs.list')

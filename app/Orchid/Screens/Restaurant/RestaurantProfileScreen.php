@@ -7,6 +7,7 @@ use App\Models\RestaurantType;
 use App\Models\Amenity;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Orchid\Attachment\Models\Attachment;
 use Orchid\Screen\Screen;
@@ -58,23 +59,26 @@ class RestaurantProfileScreen extends Screen
 
     public function layout(): array
     {
-        // Lấy danh sách ngân hàng từ API VietQR
-        $banks = [];
-        // try {
-        //     $response = @file_get_contents('https://api.vietqr.io/v2/banks');
-        //     if ($response !== false) {
-        //         $json = json_decode($response, true);
-        //         if (isset($json['data']) && is_array($json['data'])) {
-        //             foreach ($json['data'] as $bank) {
-        //                 if (isset($bank['name']) && isset($bank['bin'])) {
-        //                     $banks[$bank['bin']] = $bank['name'] . ' (' . $bank['bin'] . ')';
-        //                 }
-        //             }
-        //         }
-        //     }
-        // } catch (\Exception $e) {
-        //     $banks = [];
-        // }
+        $banks = Cache::remember('vietqr_banks', now()->addHours(12), function () {
+            $banks = [];
+            try {
+                $response = @file_get_contents('https://api.vietqr.io/v2/banks');
+                if ($response !== false) {
+                    $json = json_decode($response, true);
+                    if (isset($json['data']) && is_array($json['data'])) {
+                        foreach ($json['data'] as $bank) {
+                            if (isset($bank['name']) && isset($bank['bin'])) {
+                                $banks[$bank['bin']] = $bank['name'] . ' (' . $bank['code'] . ')';
+                            }
+                        }
+                    }
+                }
+            } catch (\Exception $e) {
+                $banks = [];
+            }
+            return $banks;
+        });
+        
         return [
             Layout::rows([
                 Input::make('restaurant.name')
@@ -240,31 +244,31 @@ class RestaurantProfileScreen extends Screen
                 //     ->placeholder('Nhập thông tin')
                 //     ->required(),
 
-                // Group::make([
-                //     Select::make('restaurant.bank_code')
-                //         ->title('Ngân hàng')
-                //         ->options($banks)
-                //         ->empty('Chọn ngân hàng')
-                //         ->required(),
-                //     Input::make('restaurant.bank_account_number')
-                //         ->title('Số tài khoản ngân hàng')
-                //         ->placeholder('Nhập số tài khoản')
-                //         ->type('text')
-                //         ->maxlength(50)
-                // ]),
+                Group::make([
+                    Select::make('restaurant.bank_code')
+                        ->title('Ngân hàng')
+                        ->options($banks)
+                        ->empty('Chọn ngân hàng')
+                        ->required(),
+                    Input::make('restaurant.bank_account_number')
+                        ->title('Số tài khoản ngân hàng')
+                        ->placeholder('Nhập số tài khoản')
+                        ->type('text')
+                        ->maxlength(50)
+                ]),
 
-                // Group::make([
-                //     Input::make('restaurant.deposit_adult')
-                //         ->title('Tiền cọc/người lớn (VND)')
-                //         ->type('number')
-                //         ->min(0)
-                //         ->required(),
-                //     Input::make('restaurant.deposit_child')
-                //         ->title('Tiền cọc/trẻ em (VND)')
-                //         ->type('number')
-                //         ->min(0)
-                //         ->required(),
-                // ]),
+                Group::make([
+                    Input::make('restaurant.deposit_adult')
+                        ->title('Tiền cọc/người lớn (VND)')
+                        ->type('number')
+                        ->min(0)
+                        ->required(),
+                    Input::make('restaurant.deposit_child')
+                        ->title('Tiền cọc/trẻ em (VND)')
+                        ->type('number')
+                        ->min(0)
+                        ->required(),
+                ]),
             ])
         ];
     }

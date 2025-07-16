@@ -32,7 +32,7 @@ class AdminUserSeeder extends Seeder
                 [
                     'name' => 'Admin Restaurant',
                     'slug' => 'admin-restaurant',
-                    'permissions' => ([
+                    'permissions' => json_encode([
                         'platform.index' => true,
                         'platform.restaurant.profile' => true,
                         'platform.review.manage' => true,
